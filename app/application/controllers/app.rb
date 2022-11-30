@@ -15,9 +15,9 @@ module LightofDay
     plugin :status_handler
 
     # use Rack::MethodOverride
-    status_handler(404) do
-      view('404')
-    end
+    # status_handler(404) do
+    #   view('404')
+    # end
 
     route do |routing|
       response['Content-Type'] = 'application/json'
@@ -115,7 +115,7 @@ module LightofDay
             end
           end
 
-          routing.on 'favorite' do
+          routing.on 'view' do
             routing.is do
               # POST /api/v1/light-of-day/view/{origin_id}
               routing.post do
