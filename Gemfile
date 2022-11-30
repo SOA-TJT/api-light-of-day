@@ -7,6 +7,10 @@ ruby File.read('.ruby-version').strip
 gem 'figaro', '~> 1.2'
 gem 'rake'
 
+# PRESENTATION LAYER
+gem 'multi_json', '~> 1.15'
+gem 'roar', '~> 1.1'
+
 # Web Application
 gem 'json', '~> 2.6.2'
 gem 'puma', '~> 5'
