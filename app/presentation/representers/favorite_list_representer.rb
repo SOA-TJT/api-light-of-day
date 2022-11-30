@@ -6,7 +6,7 @@ require 'roar/json'
 require_relative 'openstruct_with_links'
 require_relative 'view_lightofday_representer'
 
-module CodePraise
+module LightofDay
   module Representer
     # Represents list of projects for API output
     class FavoriteList < Roar::Decorator
