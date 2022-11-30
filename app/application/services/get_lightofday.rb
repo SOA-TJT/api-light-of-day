@@ -37,7 +37,7 @@ module LightofDay
 
       def retrieve_lightofday(input)
         Repository::For.klass(Unsplash::Entity::View).find_origin_id(input[:list])
-          .then { |lightofday| Response::ViewLightofDay.new(ightofday) }
+          .then { |lightofday| Response::ViewLightofDay.new(lightofday) }
           .then { |list| Response::ApiResult.new(status: :ok, message: list) }
           .then { |result| Success(result) }
       rescue StandardError

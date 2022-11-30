@@ -3,6 +3,6 @@
 module LightofDay
   module Response
     # List of favorites
-    FavoriteList = Struct.new(:lightofdays)
+    TopicList = Struct.new(:topics)
   end
 end
