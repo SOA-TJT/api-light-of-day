@@ -13,7 +13,7 @@ module CodePraise
       include Roar::JSON
 
       collection :view_lightofdays, extend: Representer::ViewLightofDay,
-                            class: Representer::OpenStructWithLinks
+                                    class: Representer::OpenStructWithLinks
     end
   end
 end
