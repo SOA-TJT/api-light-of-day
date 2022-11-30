@@ -16,8 +16,7 @@ module LightofDay
 
       property :idx
       property :lightofday
-      property :quote, extend: Representer::Inspiration, class: OpenStruct
-      property :quote_author, extend: Representer::Inspiration, class: OpenStruct
+      property :inspiration, extend: Representer::Inspiration, class: OpenStruct
       property :creator_name
       property :topics
       property :urls
