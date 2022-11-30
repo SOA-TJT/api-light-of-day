@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'dry/transaction'
+# require 'dry/monads'
 
 module LightofDay
   module Service
@@ -18,7 +19,7 @@ module LightofDay
       # end
       include Dry::Transaction
 
-      step :validate_list
+      # step :validate_list
       step :retrieve_lightofday
 
       private
@@ -26,17 +27,17 @@ module LightofDay
       DB_ERR = 'Cannot access database'
 
       # Expects list of movies in input[:list_request]
-      def validate_list(input)
-        list_request = input[:list_request].call
-        if list_request.success?
-          Success(input.merge(list: list_request.value!))
-        else
-          Failure(list_request.failure)
-        end
-      end
+      # def validate_list(input)
+      #   list_request = input[:list_request].call
+      #   if list_request.success?
+      #     Success(input.merge(list: list_request.value!))
+      #   else
+      #     Failure(list_request.failure)
+      #   end
+      # end
 
       def retrieve_lightofday(input)
-        Repository::For.klass(Unsplash::Entity::View).find_origin_id(input[:list])
+        Repository::For.klass(Unsplash::Entity::View).find_origin_id(input)
           .then { |lightofday| Response::ViewLightofDay.new(lightofday) }
           .then { |list| Response::ApiResult.new(status: :ok, message: list) }
           .then { |result| Success(result) }

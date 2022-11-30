@@ -46,7 +46,7 @@ module LightofDay
       end
 
       routing.on 'api/v1' do
-        routing.on 'list_topics', String do |sort_by|
+        routing.on 'topics', String do |sort_by|
           # GET /api/v1/topics?sort="default"
           routing.get do
             topics_result = topics_mapper.call(sort_by)
@@ -62,41 +62,41 @@ module LightofDay
         end
 
         routing.on 'favorite-list' do
-          routing.is do
-            # GET /api/v1/light-of-day?list={origin_ids}
-            routing.get do
-              list_req = Request::EncodedFavoriteList.new(routing.params)
-              result = Service::ListFavorite.new.call(list_request: list_req)
+          # routing.is do
+          #   # GET /api/v1/light-of-day?list={origin_ids}
+          #   routing.get do
+          #     list_req = Request::EncodedFavoriteList.new(routing.params)
+          #     result = Service::ListFavorite.new.call(list_request: list_req)
 
-              if result.failure?
-                failed = Representer::HttpResponse.new(result.failure)
-                routing.halt failed.http_status_code, failed.to_json
-              end
+          #     if result.failure?
+          #       failed = Representer::HttpResponse.new(result.failure)
+          #       routing.halt failed.http_status_code, failed.to_json
+          #     end
 
-              http_response = Representer::HttpResponse.new(result.value!)
-              response.status = http_response.http_status_code
-              Representer::FavoriteList.new(result.value!.message).to_json
-            end
-          end
+          #     http_response = Representer::HttpResponse.new(result.value!)
+          #     response.status = http_response.http_status_code
+          #     Representer::FavoriteList.new(result.value!.message).to_json
+          #   end
+          # end
         end
 
         routing.on 'light-of-day' do
-          routing.is do
-            # POST /light-of-day/
-            routing.post do
-              topic_id = routing.params['topic_id']
+          # routing.is do
+          #   # POST /light-of-day/
+          #   routing.post do
+          #     topic_id = routing.params['topic_id']
 
-              slug = topics_mapper.find_slug(topic_id)
-              if slug.failure?
-                flash[:error] = slug.failure
-                routing.redirect '/'
-              end
-              slug = slug.value!
-              routing.redirect "light-of-day/topic/#{slug}"
-            end
-          end
+          #     slug = topics_mapper.find_slug(topic_id)
+          #     if slug.failure?
+          #       flash[:error] = slug.failure
+          #       routing.redirect '/'
+          #     end
+          #     slug = slug.value!
+          #     routing.redirect "light-of-day/topic/#{slug}"
+          #   end
+          # end
 
-          routing.on 'topic', String do |topic_slug|
+          routing.on 'random_view', String do |topic_slug|
             # GET /api/v1/light-of-day/random_view/{topic_slug}
             routing.get do
               topic_data = topics_mapper.find_topic(topic_slug)
@@ -115,13 +115,28 @@ module LightofDay
             end
           end
 
+          routing.is do
+            # GET /api/v1/light-of-day?list={origin_ids}
+            routing.get do
+              list_req = Request::EncodedFavoriteList.new(routing.params)
+              result = Service::ListFavorite.new.call(list_request: list_req)
+
+              if result.failure?
+                failed = Representer::HttpResponse.new(result.failure)
+                routing.halt failed.http_status_code, failed.to_json
+              end
+
+              http_response = Representer::HttpResponse.new(result.value!)
+              response.status = http_response.http_status_code
+              Representer::FavoriteList.new(result.value!.message).to_json
+            end
+          end
+
           routing.on 'view' do
-            routing.is do
+            routing.on String do |view_id|
               # POST /api/v1/light-of-day/view/{origin_id}
               routing.post do
-                result = Service::ParseLightofday.new.call(
-                  origin_id: origin_id
-                )
+                result = Service::ParseLightofday.new.call(routing.params['favorite'])
 
                 if result.failure?
                   failed = Representer::HttpResponse.new(result.failure)
@@ -132,8 +147,6 @@ module LightofDay
                 response.status = http_response.http_status_code
                 Representer::ViewLightofDay.new(result.value!.message).to_json
               end
-            end
-            routing.on String do |view_id|
               # GET /api/v1/light-of-day/view/{origin_id}
               routing.get do
                 # path_request = Request::ProjectPath.new(

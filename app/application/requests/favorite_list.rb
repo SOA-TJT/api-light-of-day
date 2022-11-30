@@ -17,7 +17,7 @@ module LightofDay
       # Use in API to parse incoming list requests
       def call
         Success(
-          JSON.parse(decode(@params['list']))
+          JSON.parse(@params['list'])
         )
       rescue StandardError
         Failure(
@@ -41,7 +41,7 @@ module LightofDay
 
       # Use in tests to create a ProjectList object from a list
       def self.to_request(list)
-        EncodedProjectList.new('list' => to_encoded(list))
+        EncodedFavoriteList.new('list' => to_encoded(list))
       end
     end
   end
