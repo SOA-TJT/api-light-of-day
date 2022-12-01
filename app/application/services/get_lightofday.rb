@@ -37,6 +37,7 @@ module LightofDay
       # end
 
       def retrieve_lightofday(input)
+        puts input
         lightofday = Repository::For.klass(Unsplash::Entity::View).find_origin_id(input)
         # .then { |lightofday| Response::FavoriteList.new(lightofday) }
         #  .then { |list| Response::ApiResult.new(status: :ok, message: list) }
