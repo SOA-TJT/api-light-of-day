@@ -1,7 +1,7 @@
 ---
 # Apply latest Ruby style guide and newly introduced cops
 AllCops:
-  TargetRubyVersion: 3.1
+  TargetRubyVersion: 3.1.2
   NewCops: enable
   Exclude:
     - "_snippets/*"
