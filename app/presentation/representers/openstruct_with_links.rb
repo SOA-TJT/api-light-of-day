@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module CodePraise
+module LightofDay
   module Representer
     # OpenStruct for deserializing json with hypermedia
     class OpenStructWithLinks < OpenStruct
