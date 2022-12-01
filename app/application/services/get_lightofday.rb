@@ -37,10 +37,11 @@ module LightofDay
       # end
 
       def retrieve_lightofday(input)
-        Repository::For.klass(Unsplash::Entity::View).find_origin_id(input)
-          .then { |lightofday| Response::ViewLightofDay.new(lightofday) }
-          .then { |list| Response::ApiResult.new(status: :ok, message: list) }
-          .then { |result| Success(result) }
+        lightofday = Repository::For.klass(Unsplash::Entity::View).find_origin_id(input)
+        # .then { |lightofday| Response::FavoriteList.new(lightofday) }
+        #  .then { |list| Response::ApiResult.new(status: :ok, message: list) }
+        #  .then { |result| Success(result) }
+        Success(Response::ApiResult.new(status: :created, message: lightofday))
       rescue StandardError
         Failure(
           Response::ApiResult.new(status: :internal_error, message: DB_ERR)

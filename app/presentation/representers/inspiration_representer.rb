@@ -13,7 +13,7 @@ module LightofDay
       include Roar::JSON
 
       property :quote
-      property :quote_author
+      property :author
     end
   end
 end

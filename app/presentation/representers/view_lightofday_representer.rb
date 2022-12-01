@@ -14,15 +14,15 @@ module LightofDay
       include Roar::Hypermedia
       include Roar::Decorator::HypermediaConsumer
 
-      property :idx
-      property :lightofday
-      property :inspiration, extend: Representer::Inspiration, class: OpenStruct
+      # property :idx
+      # property :lightofday
       property :creator_name
       property :topics
       property :urls
       property :urls_small
       property :context
-      property :view_id
+      # property :view_id
+      property :inspiration, extend: Representer::Inspiration, class: OpenStruct
 
       link :self do
         "#{App.config.API_HOST}/api/v1/light-of-day/view/#{origin_id}"

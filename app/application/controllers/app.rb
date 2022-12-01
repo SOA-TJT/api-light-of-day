@@ -99,19 +99,19 @@ module LightofDay
           routing.on 'random_view', String do |topic_slug|
             # GET /api/v1/light-of-day/random_view/{topic_slug}
             routing.get do
-              topic_data = topics_mapper.find_topic(topic_slug)
-              topic_data = topic_data.value!
-              view_data = Service::FindLightofDay.new.call(topic_data)
+              result = Service::FindLightofDay.new.call(topic_slug)
 
-              if view_data.failure?
-                flash[:error] = view_data.failure
-                view_lightofday = []
-              else
-                view_data = view_data.value!
-                view_lightofday = Views::LightofDay.new(view_data)
+              if result.failure?
+                failed = Representer::HttpResponse.new(result.failure)
+                routing.halt failed.http_status_code, failed.to_json
               end
 
-              view 'view', locals: { view: view_lightofday, is_saved: false }
+              http_response = Representer::HttpResponse.new(result.value!)
+              response.status = http_response.http_status_code
+
+              Representer::ViewLightofDay.new(
+                result.value!.message
+              ).to_json
             end
           end
 
@@ -136,7 +136,9 @@ module LightofDay
             routing.on String do |view_id|
               # POST /api/v1/light-of-day/view/{origin_id}
               routing.post do
-                result = Service::ParseLightofday.new.call(routing.params['favorite'])
+                view_record = Service::ParseLightofday.new.call(routing.params['favorite'])
+                # store lightofday to DB
+                result = Service::StoreLightofDay.new.call(view_record)
 
                 if result.failure?
                   failed = Representer::HttpResponse.new(result.failure)
