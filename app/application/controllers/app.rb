@@ -22,6 +22,7 @@ module LightofDay
     route do |routing|
       response['Content-Type'] = 'application/json'
 
+      find_topics = Service::FindTopics.new.call
       # GET /
       routing.root do
         message = "Light of Day API v1 at /api/v1/ in #{App.environment} mode"
@@ -40,7 +41,10 @@ module LightofDay
           routing.is do
             routing.get do
               list_req = Request::EncodedTopics.new(routing.params)
-              result = Service::ListTopics.new.call(list_request: list_req)
+
+              result = Service::ListTopics.new.with_step_args(
+                retrieve_topics: [mapper: find_topics.value!]
+              ).call(list_request: list_req)
 
               if result.failure?
                 failed = Representer::HttpResponse.new(result.failure)
