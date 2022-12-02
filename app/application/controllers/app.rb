@@ -76,7 +76,7 @@ module LightofDay
             # GET /api/v1/light-of-day/random_view/{topic_slug}
             routing.get do
               result = Service::FindLightofDay.new.call(topic_slug)
-
+              puts result.value!.message
               if result.failure?
                 failed = Representer::HttpResponse.new(result.failure)
                 routing.halt failed.http_status_code, failed.to_json
@@ -112,9 +112,13 @@ module LightofDay
             routing.on String do |view_id|
               # POST /api/v1/light-of-day/view/{origin_id}
               routing.post do
-                view_record = Service::ParseLightofday.new.call(routing.params['favorite'])
+                # when post, the parameter you input should be topic_id
+                # need to be discussion
+                view_result = Service::FindLightofDay.new.call(view_id)
+                # view_record = Service::ParseLightofday.new.call(view_result)
+
                 # store lightofday to DB
-                result = Service::StoreLightofDay.new.call(view_record)
+                result = Service::StoreLightofDay.new.call(view_result.value!.message)
 
                 if result.failure?
                   failed = Representer::HttpResponse.new(result.failure)
