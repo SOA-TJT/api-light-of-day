@@ -20,6 +20,8 @@ module LightofDay
       private
 
       def validate_topic(input)
+        list_request = input[:list_request].call
+        put list_request
         if input.success?
           Success(input)
         else
@@ -28,6 +30,7 @@ module LightofDay
       end
 
       def retrieve_topics(type)
+        print type
         data = if type == 'normal'
                  @topics_mapper.topics
                elsif type == 'created_time'
