@@ -25,6 +25,19 @@ module LightofDay
     route do |routing|
       response['Content-Type'] = 'application/json'
 
+<<<<<<< HEAD
+      # topics_mapper = Service::ListTopics.new
+      # topics_result = topics_mapper.call('normal')
+      # if topics_result.failure?
+      #   flash[:error] = topics_result.failure
+      #   view_topic = []
+      # else
+      #   topics_result = topics_result.value!
+      #   view_topic = Views::TopicList.new(topics_result)
+      # end
+
+=======
+>>>>>>> f187be25f358997aca7392f4670282c488d6786e
       # GET /
       routing.root do
         message = "Light of Day API v1 at /api/v1/ in #{App.environment} mode"
@@ -58,16 +71,29 @@ module LightofDay
           # GET /api/v1/topics?sort="default"
           routing.is do
             routing.get do
+              print routing.params['sort']
               list_req = Request::EncodedTopics.new(routing.params)
-              result = Service::ListTopics.new.call(list_req)
+              # print list_req.value!
+              result = Service::ListTopics.new.call(routing.params['sort'])
+              print result
+              # result = Service::ListTopics.new.call(list_req)
               if result.failure?
                 failed = Representer::HttpResponse.new(result.failure)
                 routing.halt failed.http_status_code, failed.to_json
               end
 
-              http_response = Representer::HttpResponse.new(result.value!)
-              response.status = http_response.http_status_code
-              Representer::Topics.new(result.value!.message).to_json
+              # response.status = http_response.http_status_code
+
+              result_response = Representer::HttpResponse.new(
+                Response::ApiResult.new(status: :ok, message: 'hello')
+              )
+              response.status = result_response.http_status_code
+              result_response.to_json
+
+              # http_response = Representer::HttpResponse.new(result.value!)
+
+              # response.status = http_response.http_status_code
+              # Representer::Topics.new(result.value!.message).to_json
             end
           end
         end
@@ -103,7 +129,6 @@ module LightofDay
               end
 
               http_response = Representer::HttpResponse.new(result.value!)
-              response.status = http_response.http_status_code
               Representer::FavoriteList.new(result.value!.message).to_json
             end
           end
