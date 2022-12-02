@@ -25,8 +25,8 @@ module LightofDay
     route do |routing|
       response['Content-Type'] = 'application/json'
 
-      topics_mapper = Service::ListTopics.new
-      topics_result = topics_mapper.call('normal')
+      # topics_mapper = Service::ListTopics.new
+      # topics_result = topics_mapper.call('normal')
       # if topics_result.failure?
       #   flash[:error] = topics_result.failure
       #   view_topic = []
@@ -68,16 +68,28 @@ module LightofDay
           # GET /api/v1/topics?sort="default"
           routing.is do
             routing.get do
+              print routing.params['sort']
               list_req = Request::EncodedTopics.new(routing.params)
-              result = Service::TopicList.new.call(list_req)
+              # print list_req.value!
+              result = Service::ListTopics.new.call(routing.params['sort'])
+              print result
               if result.failure?
                 failed = Representer::HttpResponse.new(result.failure)
                 routing.halt failed.http_status_code, failed.to_json
               end
 
-              http_response = Representer::HttpResponse.new(result.value!)
-              response.status = http_response.http_status_code
-              Representer::Topics.new(result.value!.message).to_json
+              # response.status = http_response.http_status_code
+
+              result_response = Representer::HttpResponse.new(
+                Response::ApiResult.new(status: :ok, message: 'hello')
+              )
+              response.status = result_response.http_status_code
+              result_response.to_json
+
+              # http_response = Representer::HttpResponse.new(result.value!)
+
+              # response.status = http_response.http_status_code
+              # Representer::Topics.new(result.value!.message).to_json
             end
           end
         end
@@ -115,46 +127,45 @@ module LightofDay
               end
 
               http_response = Representer::HttpResponse.new(result.value!)
-              response.status = http_response.http_status_code
               Representer::FavoriteList.new(result.value!.message).to_json
             end
           end
 
-          # routing.on 'view' do
-          #   routing.on String do |view_id|
-          #     # POST /api/v1/light-of-day/view/{origin_id}
-          #     routing.post do
-          #       view_record = Service::ParseLightofday.new.call(routing.params['favorite'])
-          #       # store lightofday to DB
-          #       result = Service::StoreLightofDay.new.call(view_record)
+          routing.on 'view' do
+            routing.on String do |view_id|
+              # POST /api/v1/light-of-day/view/{origin_id}
+              routing.post do
+                view_record = Service::ParseLightofday.new.call(routing.params['favorite'])
+                # store lightofday to DB
+                result = Service::StoreLightofDay.new.call(view_record)
 
-          #       if result.failure?
-          #         failed = Representer::HttpResponse.new(result.failure)
-          #         routing.halt failed.http_status_code, failed.to_json
-          #       end
+                if result.failure?
+                  failed = Representer::HttpResponse.new(result.failure)
+                  routing.halt failed.http_status_code, failed.to_json
+                end
 
-          #       http_response = Representer::HttpResponse.new(result.value!)
-          #       response.status = http_response.http_status_code
-          #       Representer::ViewLightofDay.new(result.value!.message).to_json
-          #     end
-          #     # GET /api/v1/light-of-day/view/{origin_id}
-          #     routing.get do
-          #       result = Service::GetLightofDay.new.call(view_id)
+                http_response = Representer::HttpResponse.new(result.value!)
+                response.status = http_response.http_status_code
+                Representer::ViewLightofDay.new(result.value!.message).to_json
+              end
+              # GET /api/v1/light-of-day/view/{origin_id}
+              routing.get do
+                result = Service::GetLightofDay.new.call(view_id)
 
-          #       if result.failure?
-          #         failed = Representer::HttpResponse.new(result.failure)
-          #         routing.halt failed.http_status_code, failed.to_json
-          #       end
+                if result.failure?
+                  failed = Representer::HttpResponse.new(result.failure)
+                  routing.halt failed.http_status_code, failed.to_json
+                end
 
-          #       http_response = Representer::HttpResponse.new(result.value!)
-          #       response.status = http_response.http_status_code
-          #       puts result.value!
-          #       Representer::ViewLightofDay.new(
-          #         result.value!.message
-          #       ).to_json
-          #     end
-          #   end
-          # end
+                http_response = Representer::HttpResponse.new(result.value!)
+                response.status = http_response.http_status_code
+                puts result.value!
+                Representer::ViewLightofDay.new(
+                  result.value!.message
+                ).to_json
+              end
+            end
+          end
         end
       end
     end

@@ -17,9 +17,11 @@ module LightofDay
         @topics_mapper = LightofDay::TopicMapper.new(App.config.UNSPLASH_SECRETS_KEY)
       end
 
+      private
+
       def validate_topic(input)
         if input.success?
-          Success(input.value)
+          Success(input)
         else
           Failure(input.failure)
         end
@@ -36,8 +38,8 @@ module LightofDay
                  @topics_mapper.popularity
                end
         Response::Topics.new(data)
-                           .then { |list| Response::ApiResult.new(status: :ok, message: list) }
-                           .then { |result| Success(result) }
+                        .then { |list| Response::ApiResult.new(status: :ok, message: list) }
+                        .then { |result| Success(result) }
         # Success(data)
       rescue StandardError
         Response::ApiResult.new(status: :api_error, message: 'API-Error')
@@ -58,20 +60,20 @@ module LightofDay
       #   Failure('Having trouble accessing the topics data')
       # end
 
-      def find_topic(slug)
-        chosed_topic_data = @topics_mapper.topics.find { |topic| topic.slug == slug }
-        Success(chosed_topic_data)
-      rescue StandardError
-        Failure('Having trouble accessing the topics data')
-      end
+      # def find_topic(slug)
+      #   chosed_topic_data = @topics_mapper.topics.find { |topic| topic.slug == slug }
+      #   Success(chosed_topic_data)
+      # rescue StandardError
+      #   Failure('Having trouble accessing the topics data')
+      # end
 
-      def find_slug(topic_id)
-        chosed_topic_data = @topics_mapper.topics.find { |topic| topic.topic_id == topic_id }
-        current_slug = chosed_topic_data.slug
-        Success(current_slug)
-      rescue StandardError
-        Failure('Having trouble accessing the slug')
-      end
+      # def find_slug(topic_id)
+      #   chosed_topic_data = @topics_mapper.topics.find { |topic| topic.topic_id == topic_id }
+      #   current_slug = chosed_topic_data.slug
+      #   Success(current_slug)
+      # rescue StandardError
+      #   Failure('Having trouble accessing the slug')
+      # end
     end
   end
 end

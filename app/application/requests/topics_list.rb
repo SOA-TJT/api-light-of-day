@@ -15,7 +15,8 @@ module LightofDay
 
       def call
         Success(
-          JSON.parse(decode(@params['list']))
+          @params['sort']
+          # JSON.parse(decode(@params['sort']))
         )
       rescue StandardError
         Failure(
@@ -26,17 +27,17 @@ module LightofDay
         )
       end
 
-      def decode(param)
-        Base64.urlsafe_decode64(param)
-      end
+      # def decode(param)
+      #   Base64.urlsafe_decode64(param)
+      # end
 
-      def self.to_encode64(list)
-        Base64.urlsafe_encode64(list.to_json)
-      end
+      # def self.to_encode64(list)
+      #   Base64.urlsafe_encode64(list.to_json)
+      # end
 
-      def self.to_request(list)
-        EncodedTopics.new('list' => to_encoded(list))
-      end
+      # def self.to_request(list)
+      #   EncodedTopics.new('list' => to_encoded(list))
+      # end
     end
   end
 end
