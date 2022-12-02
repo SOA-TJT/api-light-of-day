@@ -4,17 +4,9 @@ require 'dry/transaction'
 
 module LightofDay
   module Service
-    # Retrieves array of all listed project entities
+    # Retrieves array of all listed lightofday entities
     class ListFavorite
-      # include Dry::Monads::Result::Mixin
 
-      # def call(favorite)
-      #   favorite_list = Repository::For.klass(Unsplash::Entity::View)
-      #                                  .find_origin_ids(favorite)
-      #   Success(favorite_list)
-      # rescue StandardError
-      #   Failure('Could not access database')
-      # end
       include Dry::Transaction
 
       step :validate_list
