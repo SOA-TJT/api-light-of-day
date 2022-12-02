@@ -67,18 +67,18 @@ module LightofDay
         routing.on 'topics' do
           # GET /api/v1/topics?sort="default"
           routing.is do
-            # routing.get do
-            #   list_req = Request::EncodedTopics.new(routing.params)
-            #   result = Service::TopicList.new.call(list_req)
-            #   if result.failure?
-            #     failed = Representer::HttpResponse.new(result.failure)
-            #     routing.halt failed.http_status_code, failed.to_json
-            #   end
+            routing.get do
+              list_req = Request::EncodedTopics.new(routing.params)
+              result = Service::TopicList.new.call(list_req)
+              if result.failure?
+                failed = Representer::HttpResponse.new(result.failure)
+                routing.halt failed.http_status_code, failed.to_json
+              end
 
-            #   http_response = Representer::HttpResponse.new(result.value!)
-            #   response.status = http_response.http_status_code
-            #   Representer::Topics.new(result.value!.message).to_json
-            # end
+              http_response = Representer::HttpResponse.new(result.value!)
+              response.status = http_response.http_status_code
+              Representer::Topics.new(result.value!.message).to_json
+            end
           end
         end
         routing.on 'light-of-day' do
