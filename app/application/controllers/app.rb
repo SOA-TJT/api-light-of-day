@@ -25,16 +25,6 @@ module LightofDay
     route do |routing|
       response['Content-Type'] = 'application/json'
 
-      topics_mapper = Service::ListTopics.new
-      topics_result = topics_mapper.call('normal')
-      # if topics_result.failure?
-      #   flash[:error] = topics_result.failure
-      #   view_topic = []
-      # else
-      #   topics_result = topics_result.value!
-      #   view_topic = Views::TopicList.new(topics_result)
-      # end
-
       # GET /
       routing.root do
         message = "Light of Day API v1 at /api/v1/ in #{App.environment} mode"
@@ -105,9 +95,7 @@ module LightofDay
             # GET /api/v1/light-of-day?list={origin_ids}
             routing.get do
               list_req = Request::EncodedFavoriteList.new(routing.params)
-              puts list_request: list_req
               result = Service::ListFavorite.new.call(list_request: list_req)
-              puts result
 
               if result.failure?
                 failed = Representer::HttpResponse.new(result.failure)
