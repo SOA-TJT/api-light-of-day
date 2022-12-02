@@ -24,6 +24,8 @@ module LightofDay
             message: 'Topics list not found'
           )
         )
+      end
+
       def decode(param)
         Base64.urlsafe_decode64(param)
       end
