@@ -1,17 +1,31 @@
 # frozen_string_literal: true
 
-require 'dry/monads'
+# require 'dry/monads'
+require 'dry/transaction'
 
 module LightofDay
   module Service
     # get all topics
     class ListTopics
-      include Dry::Monads::Result::Mixin
+      # include Dry::Monads::Result::Mixin
+      include Dry::Transaction
+
+      step :validate_topic
+      step :retrieve_topics
+
       def initialize
         @topics_mapper = LightofDay::TopicMapper.new(App.config.UNSPLASH_SECRETS_KEY)
       end
 
-      def call(type)
+      def validate_topic(input)
+        if input.success?
+          Success(input.value)
+        else
+          Failure(input.failure)
+        end
+      end
+
+      def retrieve_topics(type)
         data = if type == 'normal'
                  @topics_mapper.topics
                elsif type == 'created_time'
@@ -21,10 +35,28 @@ module LightofDay
                else
                  @topics_mapper.popularity
                end
-        Success(data)
+        Response::Topics.new(data)
+                           .then { |list| Response::ApiResult.new(status: :ok, message: list) }
+                           .then { |result| Success(result) }
+        # Success(data)
       rescue StandardError
-        Failure('Having trouble accessing the topics data')
+        Response::ApiResult.new(status: :api_error, message: 'API-Error')
       end
+
+      # def call(type)
+      #   data = if type == 'normal'
+      #            @topics_mapper.topics
+      #          elsif type == 'created_time'
+      #            @topics_mapper.created_time
+      #          elsif type == 'activeness'
+      #            @topics_mapper.activeness
+      #          else
+      #            @topics_mapper.popularity
+      #          end
+      #   Success(data)
+      # rescue StandardError
+      #   Failure('Having trouble accessing the topics data')
+      # end
 
       def find_topic(slug)
         chosed_topic_data = @topics_mapper.topics.find { |topic| topic.slug == slug }

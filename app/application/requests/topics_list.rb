@@ -1,6 +1,8 @@
+# frozen_string_literal: true
 
 require 'base64'
 require 'dry/monads'
+require 'json'
 
 module LightofDay
   module Request
@@ -17,7 +19,10 @@ module LightofDay
         )
       rescue StandardError
         Failure(
-
+          Response::ApiResult.new(
+            status: :bad_request,
+            message: 'Topics list not found'
+          )
         )
       end
 

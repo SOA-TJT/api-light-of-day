@@ -110,11 +110,7 @@ GEM
       minitest (~> 5.0)
     multi_json (1.15.0)
     nio4r (2.5.8)
-    nokogiri (1.13.9-arm64-darwin)
-      racc (~> 1.4)
     nokogiri (1.13.9-x86_64-darwin)
-      racc (~> 1.4)
-    nokogiri (1.13.9-x86_64-linux)
       racc (~> 1.4)
     page-object (2.3.1)
       page_navigation (>= 0.10)
@@ -166,7 +162,7 @@ GEM
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)
-    sequel (5.62.0)
+    sequel (5.63.0)
     sexp_processor (4.16.1)
     simplecov (0.21.2)
       docile (~> 1.1)
@@ -177,9 +173,7 @@ GEM
     slim (4.1.0)
       temple (>= 0.7.6, < 0.9)
       tilt (>= 2.0.6, < 2.1)
-    sqlite3 (1.5.4-arm64-darwin)
     sqlite3 (1.5.4-x86_64-darwin)
-    sqlite3 (1.5.4-x86_64-linux)
     temple (0.8.2)
     thor (1.2.1)
     tilt (2.0.11)
@@ -206,9 +200,7 @@ GEM
     zeitwerk (2.6.6)
 
 PLATFORMS
-  arm64-darwin-21
   x86_64-darwin-21
-  x86_64-linux
 
 DEPENDENCIES
   dry-monads (~> 1.4)
