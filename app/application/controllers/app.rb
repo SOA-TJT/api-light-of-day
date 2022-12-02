@@ -50,25 +50,35 @@ module LightofDay
 
       routing.on 'api/v1' do
         # for taylor
-        routing.on 'topics', String do |sort_by|
-          # GET /api/v1/topics?sort="default"
-          routing.get do
-            topics_result = topics_mapper.call(sort_by)
-            if topics_result.failure?
-              flash[:error] = topics_result.failure
-              view_topic = []
-            else
-              topics_result = topics_result.value!
-              view_topic = Views::TopicList.new(topics_result)
-            end
-            view 'picktopic', locals: { topics: view_topic }
-          end
-        end
+        # routing.on 'topics', String do |sort_by|
+        #   # GET /api/v1/topics?sort="default"
+        #   routing.get do
+        #     topics_result = topics_mapper.call(sort_by)
+        #     if topics_result.failure?
+        #       flash[:error] = topics_result.failure
+        #       view_topic = []
+        #     else
+        #       topics_result = topics_result.value!
+        #       view_topic = Views::TopicList.new(topics_result)
+        #     end
+        #     view 'picktopic', locals: { topics: view_topic }
+        #   end
+        # end
         routing.on 'topics' do
+          # GET /api/v1/topics?sort="default"
           routing.is do
-            routing.get do
-              list_req = Request::EncodedTopics.new(routing.params)
-            end
+            # routing.get do
+            #   list_req = Request::EncodedTopics.new(routing.params)
+            #   result = Service::TopicList.new.call(list_req)
+            #   if result.failure?
+            #     failed = Representer::HttpResponse.new(result.failure)
+            #     routing.halt failed.http_status_code, failed.to_json
+            #   end
+
+            #   http_response = Representer::HttpResponse.new(result.value!)
+            #   response.status = http_response.http_status_code
+            #   Representer::Topics.new(result.value!.message).to_json
+            # end
           end
         end
         routing.on 'light-of-day' do
