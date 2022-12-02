@@ -60,17 +60,6 @@ module LightofDay
             routing.get do
               puts routing.params['sort']
               list_req = Request::EncodedTopics.new(routing.params)
-<<<<<<< HEAD
-              print list_requset: list_req
-              result = Service::ListTopics.new.call(list_requset: list_req)
-              # result = Service::ListTopics.new.call(routing.params['sort'])
-              # print result
-              # # result = Service::ListTopics.new.call(list_req)
-              # if result.failure?
-              #   failed = Representer::HttpResponse.new(result.failure)
-              #   routing.halt failed.http_status_code, failed.to_json
-              # end
-=======
               puts list_request: list_req
               result = Service::ListTopics.new.call(list_request: list_req)
               puts result
@@ -79,7 +68,6 @@ module LightofDay
                 failed = Representer::HttpResponse.new(result.failure)
                 routing.halt failed.http_status_code, failed.to_json
               end
->>>>>>> 4a61604deb2abbbf2115ca894609ebead2bc676f
 
               http_response = Representer::HttpResponse.new(result.value!)
               response.status = http_response.http_status_code
