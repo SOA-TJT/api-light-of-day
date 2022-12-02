@@ -19,6 +19,8 @@ module LightofDay
         Failure(
 
         )
+      end
+
       def decode(param)
         Base64.urlsafe_decode64(param)
       end
