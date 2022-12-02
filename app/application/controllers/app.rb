@@ -114,7 +114,13 @@ module LightofDay
             routing.on String do |view_id|
               # POST /api/v1/light-of-day/view/{origin_id}
               routing.post do
-                view_record = Service::ParseLightofday.new.call(routing.params['favorite'])
+                result = Service::FindLightofDay.new.call(view_id)
+
+                # view_record = Service::ParseLightofday.new.call(routing.params['favorite'])
+                puts result
+                puts JSON.parse(result.value!)
+                puts result.value!.message
+                view_record = Service::ParseLightofday.new.call(result.value!.message)
                 # store lightofday to DB
                 result = Service::StoreLightofDay.new.call(view_record)
 
