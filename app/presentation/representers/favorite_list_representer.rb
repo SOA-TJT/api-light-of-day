@@ -12,8 +12,8 @@ module LightofDay
     class FavoriteList < Roar::Decorator
       include Roar::JSON
 
-      collection :view_lightofdays, extend: Representer::ViewLightofDay,
-                                    class: Representer::OpenStructWithLinks
+      collection :lightofdays, extend: Representer::ViewLightofDay,
+                               class: Representer::OpenStructWithLinks
     end
   end
 end
