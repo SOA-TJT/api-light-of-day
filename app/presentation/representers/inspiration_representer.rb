@@ -11,9 +11,11 @@ module LightofDay
     #   Representer::Member.new(member).to_json
     class Inspiration < Roar::Decorator
       include Roar::JSON
-
+      property :id
+      property :origin_id
       property :quote
       property :author
+      property :topics
     end
   end
 end

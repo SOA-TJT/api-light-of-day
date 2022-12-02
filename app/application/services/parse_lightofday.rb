@@ -14,17 +14,20 @@ module LightofDay
       private
 
       def parse_lightofday(input)
-        lightofday_data = JSON.parse(input)
-        inspiration_record = create_inspiration(lightofday_data['@attributes']['inspiration']['@attributes'])
-        view_record = create_view(lightofday_data['@attributes'], inspiration_record)
+        # lightofday_data = JSON.parse(input)
+        puts input
+        
+        inspiration_record = create_inspiration(input['inspiration'])
+        view_record = create_view(input, inspiration_record)
+        # Success(lightofday)
         Success(view_record)
       end
 
       # help methods
       def create_inspiration(data)
         LightofDay::FavQs::Entity::Inspiration.new(
-          id: data['id'],
-          origin_id: data['origin_id'],
+          id: data['id'].to_i,
+          origin_id: data['origin_id'].to_i,
           topics: data['topics'],
           author: data['author'],
           quote: data['quote']
@@ -33,11 +36,11 @@ module LightofDay
 
       def create_view(data, inspiration)
         LightofDay::Unsplash::Entity::View.new(
-          id: data['id'],
+          id: data['id'].to_i,
           origin_id: data['origin_id'],
           topics: data['topics'],
-          width: data['width'],
-          height: data['height'],
+          width: data['width'].to_i,
+          height: data['height'].to_i,
           urls: data['urls'],
           urls_small: data['urls_small'],
           creator_name: data['creator_name'],

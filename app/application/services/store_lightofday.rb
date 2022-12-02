@@ -15,6 +15,7 @@ module LightofDay
       DB_ERR = 'Cannot access database'
 
       def store_lightofday(input)
+        puts input
         lightofday = Repository::For.entity(input).create(input)
 
         Success(Response::ApiResult.new(status: :created, message: lightofday))

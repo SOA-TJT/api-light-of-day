@@ -95,26 +95,26 @@ module LightofDay
           end
 
           routing.on 'view' do
-            routing.on String do |view_id|
-              # POST /api/v1/light-of-day/view/{origin_id}
-              routing.post do
-                # when post, the parameter you input should be topic_id
-                # need to be discussion
-                view_result = Service::FindLightofDay.new.call(view_id)
-                # view_record = Service::ParseLightofday.new.call(view_result)
+            # POST /api/v1/light-of-day/view/{origin_id}
+            routing.post do
+              # need to be modify(next week)
+              view_record = Service::ParseLightofday.new.call(routing.params)
+              # puts view_record
 
-                # store lightofday to DB
-                result = Service::StoreLightofDay.new.call(view_result.value!.message)
+              # store lightofday to DB
+              result = Service::StoreLightofDay.new.call(view_record.value!)
 
-                if result.failure?
-                  failed = Representer::HttpResponse.new(result.failure)
-                  routing.halt failed.http_status_code, failed.to_json
-                end
-
-                http_response = Representer::HttpResponse.new(result.value!)
-                response.status = http_response.http_status_code
-                Representer::ViewLightofDay.new(result.value!.message).to_json
+              if result.failure?
+                failed = Representer::HttpResponse.new(result.failure)
+                routing.halt failed.http_status_code, failed.to_json
               end
+
+              http_response = Representer::HttpResponse.new(result.value!)
+              response.status = http_response.http_status_code
+              Representer::ViewLightofDay.new(result.value!.message).to_json
+            end
+
+            routing.on String do |view_id|
               # GET /api/v1/light-of-day/view/{origin_id}
               routing.get do
                 result = Service::GetLightofDay.new.call(view_id)

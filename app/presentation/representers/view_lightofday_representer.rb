@@ -14,14 +14,16 @@ module LightofDay
       include Roar::Hypermedia
       include Roar::Decorator::HypermediaConsumer
 
-      # property :idx
-      # property :lightofday
+      property :id
+      property :origin_id
+      property :width
+      property :height
       property :creator_name
+      property :creator_image
+      property :creator_bio
       property :topics
       property :urls
       property :urls_small
-      property :context
-      # property :view_id
       property :inspiration, extend: Representer::Inspiration, class: OpenStruct
 
       link :self do
