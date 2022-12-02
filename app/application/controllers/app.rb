@@ -69,7 +69,7 @@ module LightofDay
           routing.is do
             routing.get do
               list_req = Request::EncodedTopics.new(routing.params)
-              result = Service::TopicList.new.call(list_req)
+              result = Service::ListTopics.new.call(list_req)
               if result.failure?
                 failed = Representer::HttpResponse.new(result.failure)
                 routing.halt failed.http_status_code, failed.to_json
@@ -128,33 +128,33 @@ module LightofDay
                 # store lightofday to DB
                 result = Service::StoreLightofDay.new.call(view_record)
 
-          #       if result.failure?
-          #         failed = Representer::HttpResponse.new(result.failure)
-          #         routing.halt failed.http_status_code, failed.to_json
-          #       end
+                if result.failure?
+                  failed = Representer::HttpResponse.new(result.failure)
+                  routing.halt failed.http_status_code, failed.to_json
+                end
 
-          #       http_response = Representer::HttpResponse.new(result.value!)
-          #       response.status = http_response.http_status_code
-          #       Representer::ViewLightofDay.new(result.value!.message).to_json
-          #     end
-          #     # GET /api/v1/light-of-day/view/{origin_id}
-          #     routing.get do
-          #       result = Service::GetLightofDay.new.call(view_id)
+                http_response = Representer::HttpResponse.new(result.value!)
+                response.status = http_response.http_status_code
+                Representer::ViewLightofDay.new(result.value!.message).to_json
+              end
+              # GET /api/v1/light-of-day/view/{origin_id}
+              routing.get do
+                result = Service::GetLightofDay.new.call(view_id)
 
-          #       if result.failure?
-          #         failed = Representer::HttpResponse.new(result.failure)
-          #         routing.halt failed.http_status_code, failed.to_json
-          #       end
+                if result.failure?
+                  failed = Representer::HttpResponse.new(result.failure)
+                  routing.halt failed.http_status_code, failed.to_json
+                end
 
-          #       http_response = Representer::HttpResponse.new(result.value!)
-          #       response.status = http_response.http_status_code
-          #       puts result.value!
-          #       Representer::ViewLightofDay.new(
-          #         result.value!.message
-          #       ).to_json
-          #     end
-          #   end
-          # end
+                http_response = Representer::HttpResponse.new(result.value!)
+                response.status = http_response.http_status_code
+                puts result.value!
+                Representer::ViewLightofDay.new(
+                  result.value!.message
+                ).to_json
+              end
+            end
+          end
         end
       end
     end
