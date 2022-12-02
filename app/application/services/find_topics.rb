@@ -10,39 +10,43 @@ module LightofDay
       # include Dry::Monads::Result::Mixin
       include Dry::Transaction
 
+
+
+      # def initialize
+      #   @topics_mapper = LightofDay::TopicMapper.new(App.config.UNSPLASH_SECRETS_KEY)
+      #   puts @topics_mapper
+      # end
+
       step :validate_topic
       step :retrieve_topics
-
-      def initialize
-        @topics_mapper = LightofDay::TopicMapper.new(App.config.UNSPLASH_SECRETS_KEY)
-      end
 
       private
 
       def validate_topic(input)
         list_request = input[:list_request].call
-        put list_request
-        if input.success?
-          Success(input)
+
+        if list_request.success?
+          Success(input.merge(list: list_request.value!))
         else
-          Failure(input.failure)
+          Failure(list_request.failure)
         end
       end
 
-      def retrieve_topics(type)
-        print type
-        data = if type == 'normal'
+      def retrieve_topics(input)
+        @topics_mapper = LightofDay::TopicMapper.new(App.config.UNSPLASH_SECRETS_KEY)
+        data = case input[:sort]
+               when 'normal'
                  @topics_mapper.topics
-               elsif type == 'created_time'
+               when 'created_time'
                  @topics_mapper.created_time
-               elsif type == 'activeness'
+               when 'activeness'
                  @topics_mapper.activeness
                else
                  @topics_mapper.popularity
                end
-        Response::Topics.new(data)
-                        .then { |list| Response::ApiResult.new(status: :ok, message: list) }
-                        .then { |result| Success(result) }
+        Response::TopicList.new(data)
+                           .then { |list| Response::ApiResult.new(status: :ok, message: list) }
+                           .then { |result| Success(result) }
         # Success(data)
       rescue StandardError
         Response::ApiResult.new(status: :api_error, message: 'API-Error')

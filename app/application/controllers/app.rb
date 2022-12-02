@@ -58,8 +58,9 @@ module LightofDay
           # GET /api/v1/topics?sort="default"
           routing.is do
             routing.get do
-              print routing.params['sort']
+              puts routing.params['sort']
               list_req = Request::EncodedTopics.new(routing.params)
+<<<<<<< HEAD
               print list_requset: list_req
               result = Service::ListTopics.new.call(list_requset: list_req)
               # result = Service::ListTopics.new.call(routing.params['sort'])
@@ -69,14 +70,28 @@ module LightofDay
               #   failed = Representer::HttpResponse.new(result.failure)
               #   routing.halt failed.http_status_code, failed.to_json
               # end
+=======
+              puts list_request: list_req
+              result = Service::ListTopics.new.call(list_request: list_req)
+              puts result
+              # result = Service::ListTopics.new.call(list_req)
+              if result.failure?
+                failed = Representer::HttpResponse.new(result.failure)
+                routing.halt failed.http_status_code, failed.to_json
+              end
+>>>>>>> 4a61604deb2abbbf2115ca894609ebead2bc676f
+
+              http_response = Representer::HttpResponse.new(result.value!)
+              response.status = http_response.http_status_code
+              Representer::Topics.new(result.value!.message).to_json
 
               # response.status = http_response.http_status_code
 
-              result_response = Representer::HttpResponse.new(
-                Response::ApiResult.new(status: :ok, message: 'hello')
-              )
-              response.status = result_response.http_status_code
-              result_response.to_json
+              # result_response = Representer::HttpResponse.new(
+              #   Response::ApiResult.new(status: :ok, message: 'hello')
+              # )
+              # response.status = result_response.http_status_code
+              # result_response.to_json
 
               # http_response = Representer::HttpResponse.new(result.value!)
 
@@ -90,7 +105,6 @@ module LightofDay
             # GET /api/v1/light-of-day/random_view/{topic_slug}
             routing.get do
               result = Service::FindLightofDay.new.call(topic_slug)
-              puts result.value!.message
               if result.failure?
                 failed = Representer::HttpResponse.new(result.failure)
                 routing.halt failed.http_status_code, failed.to_json
@@ -117,6 +131,7 @@ module LightofDay
               end
 
               http_response = Representer::HttpResponse.new(result.value!)
+              response.status = http_response.http_status_code
               Representer::FavoriteList.new(result.value!.message).to_json
             end
           end
