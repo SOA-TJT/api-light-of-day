@@ -25,19 +25,6 @@ module LightofDay
     route do |routing|
       response['Content-Type'] = 'application/json'
 
-<<<<<<< HEAD
-      # topics_mapper = Service::ListTopics.new
-      # topics_result = topics_mapper.call('normal')
-      # if topics_result.failure?
-      #   flash[:error] = topics_result.failure
-      #   view_topic = []
-      # else
-      #   topics_result = topics_result.value!
-      #   view_topic = Views::TopicList.new(topics_result)
-      # end
-
-=======
->>>>>>> f187be25f358997aca7392f4670282c488d6786e
       # GET /
       routing.root do
         message = "Light of Day API v1 at /api/v1/ in #{App.environment} mode"
