@@ -10,8 +10,6 @@ module LightofDay
       # include Dry::Monads::Result::Mixin
       include Dry::Transaction
 
-
-
       # def initialize
       #   @topics_mapper = LightofDay::TopicMapper.new(App.config.UNSPLASH_SECRETS_KEY)
       #   puts @topics_mapper
@@ -26,13 +24,16 @@ module LightofDay
         list_request = input[:list_request].call
 
         if list_request.success?
-          Success(input.merge(list: list_request.value!))
+          Success(input.merge(sort: list_request.value!))
         else
           Failure(list_request.failure)
         end
       end
 
       def retrieve_topics(input)
+        # puts '-------------'
+        # puts input[:sort]
+        # puts '-------------'
         @topics_mapper = LightofDay::TopicMapper.new(App.config.UNSPLASH_SECRETS_KEY)
         data = case input[:sort]
                when 'normal'
