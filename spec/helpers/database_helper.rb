@@ -7,7 +7,6 @@ module DatabaseHelper
     LightofDay::App.DB.run('PRAGMA foreign_keys =OFF')
     LightofDay::Database::InspirationOrm.map(&:destroy)
     LightofDay::Database::ViewOrm.map(&:destroy)
-    # LightofDay::Database::TopicOrm.map(&:destroy)
     LightofDay::App.DB.run('PRAGMA foreign_keys =ON')
   end
 end

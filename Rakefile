@@ -9,19 +9,22 @@ task :default do
   puts `rake -T`
 end
 
-desc 'run test'
-task :spec do
-  sh 'ruby spec/unsplash_api_spec.rb'
+desc 'Run unit and integration tests'
+Rake::TestTask.new(:spec) do |t|
+  t.pattern = 'spec/tests/{integration,unit}/**/*_spec.rb'
+  t.warning = false
 end
 
-desc 'run testdb'
-task :specdb do
-  sh 'ruby spec/gateway_database_spec.rb'
+desc 'Run all tests'
+Rake::TestTask.new(:spec_all) do |t|
+  t.pattern = 'spec/tests/**/*_spec.rb'
+  t.warning = false
 end
 
-desc 'run testdomain'
-task :specdomain do
-  sh 'ruby spec/domain_topics_spec.rb'
+desc 'Run acceptance tests'
+Rake::TestTask.new(:spec_accept) do |t|
+  t.pattern = 'spec/tests/acceptance/*_spec.rb'
+  t.warning = false
 end
 
 desc 'Generate Base64 for secret used in Rack :session'
