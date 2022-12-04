@@ -51,6 +51,7 @@ group :test do
 
   gem 'headless', '~> 2.3'
   gem 'page-object', '~> 2.3'
+  gem 'rack-test'
   gem 'watir', '~> 7.0'
   gem 'webdrivers', '~> 5.0'
 end

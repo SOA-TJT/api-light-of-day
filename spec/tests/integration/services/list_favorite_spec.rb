@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require_relative '../../../helpers/spec_helper.rb'
-require_relative '../../../helpers/vcr_helper.rb'
-require_relative '../../../helpers/database_helper.rb'
+require_relative '../../../helpers/spec_helper'
+require_relative '../../../helpers/vcr_helper'
+require_relative '../../../helpers/database_helper'
 
 require 'ostruct'
 
@@ -25,15 +25,16 @@ describe 'LightofDay Service Integration Test' do
     it 'HAPPY: should return lightofday that are being watched' do
       # GIVEN: a valid project exists locally and is being watched
       view_lightofday = LightofDay::Unsplash::ViewMapper
-        .new(UNSPLAH_TOKEN, TOPIC_ID)
-        .find_a_photo
-      db_lightofday = LightofDay::Repository::For.entity(view_lightofday)
-        .create(view_lightofday)
+                        .new(UNSPLAH_TOKEN, TOPIC_ID)
+                        .find_a_photo
+      db_lightofday = LightofDay::Repository::For
+                      .entity(view_lightofday)
+                      .create(view_lightofday)
 
-      watched_list = [VIEW_ID]
+      list_req = LightofDay::Request::EncodedFavoriteList.new(VIEW_ID)
 
       # WHEN: we request a list of all watched projects
-      result = LightofDay::Service::ListFavorite.new.call(watched_list)
+      result = LightofDay::Service::ListFavorite.new.call(list_request: list_req)
 
       # THEN: we should see our project in the resulting list
       _(result.success?).must_equal true
@@ -44,31 +45,30 @@ describe 'LightofDay Service Integration Test' do
     it 'HAPPY: should not return projects that are not being watched' do
       # GIVEN: a valid project exists locally but is not being watched
       view_lightofday = LightofDay::Unsplash::ViewMapper
-        .new(UNSPLAH_TOKEN, TOPIC_ID)
-        .find_a_photo
+                        .new(UNSPLAH_TOKEN, TOPIC_ID)
+                        .find_a_photo
       LightofDay::Repository::For.entity(view_lightofday)
-        .create(view_lightofday)
+                                 .create(view_lightofday)
 
-      watched_list = []
+      list_req = LightofDay::Request::EncodedFavoriteList.new('')
 
       # WHEN: we request a list of all watched projects
-      result = LightofDay::Service::ListFavorite.new.call(watched_list)
+      result = LightofDay::Service::ListFavorite.new.call(list_request: list_req)
 
       # THEN: it should return an empty list
-      _(result.success?).must_equal true
+      _(result.success?).must_equal false
       lightofday = result.value!
       _(lightofday).must_equal []
     end
 
     it 'SAD: should not watched projects if they are not loaded' do
       # GIVEN: we are watching a project that does not exist locally
-      watched_list = []
-
+      list_req = LightofDay::Request::EncodedFavoriteList.new('')
       # WHEN: we request a list of all watched projects
-      result = LightofDay::Service::ListFavorite.new.call(watched_list)
+      result = LightofDay::Service::ListFavorite.new.call(list_request: list_req)
 
       # THEN: it should return an empty list
-      _(result.success?).must_equal true
+      _(result.success?).must_equal false
       lightofday = result.value!
       _(lightofday).must_equal []
     end

@@ -14,23 +14,21 @@ module LightofDay
       private
 
       def parse_lightofday(input)
-        # lightofday_data = JSON.parse(input)
-        puts input
-        
         inspiration_record = create_inspiration(input['inspiration'])
-        view_record = create_view(input, inspiration_record)
-        # Success(lightofday)
-        Success(view_record)
+        # view_record = create_view(input, inspiration_record)
+        # Success(view_record)
       end
 
       # help methods
       def create_inspiration(data)
+        inspiration_hash = eval(data)
+
         LightofDay::FavQs::Entity::Inspiration.new(
-          id: data['id'].to_i,
-          origin_id: data['origin_id'].to_i,
-          topics: data['topics'],
-          author: data['author'],
-          quote: data['quote']
+          id: nil,
+          origin_id: inspiration_hash[:origin_id],
+          topics: inspiration_hash[:topics],
+          author: inspiration_hash[:author],
+          quote: inspiration_hash[:quote]
         )
       end
 
