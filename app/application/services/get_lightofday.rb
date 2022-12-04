@@ -19,7 +19,7 @@ module LightofDay
         puts input
         lightofday = Repository::For.klass(Unsplash::Entity::View).find_origin_id(input)
 
-        Success(Response::ApiResult.new(status: :created, message: lightofday))
+        Success(Response::ApiResult.new(status: :ok, message: lightofday))
       rescue StandardError
         Failure(
           Response::ApiResult.new(status: :internal_error, message: DB_ERR)

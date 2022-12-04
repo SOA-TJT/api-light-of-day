@@ -20,7 +20,7 @@ module LightofDay
                      .new(App.config.UNSPLASH_SECRETS_KEY,
                           input).find_a_photo
 
-        Success(Response::ApiResult.new(status: :created, message: lightofday))
+        Success(Response::ApiResult.new(status: :ok, message: lightofday))
       rescue StandardError
         Failure(
           Response::ApiResult.new(status: :internal_error, message: DB_ERR)
