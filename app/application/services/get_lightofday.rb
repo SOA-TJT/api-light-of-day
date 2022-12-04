@@ -19,7 +19,7 @@ module LightofDay
         puts input
         lightofday = Repository::For.klass(Unsplash::Entity::View).find_origin_id(input)
         if lightofday
-          Success(Response::ApiResult.new(status: :created, message: lightofday))
+          Success(Response::ApiResult.new(status: :ok, message: lightofday))
         else
           Failure(Response::ApiResult.new(status: :not_found, message: nil))
         end
