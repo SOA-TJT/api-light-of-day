@@ -40,10 +40,10 @@ jobs:
           DB_FILENAME: ${{ secrets.DB_FILENAME }}
         run: RACK_ENV=test bundle exec rake db:migrate
 
-      - name: Run all domain specs
+      - name: Run all specs
         env: # define secrets in Github project -> settings -> secrets
           UNSPLASH_SECRETS_KEY: ${{ secrets.UNSPLASH_SECRETS_KEY }}
           DB_FILENAME: ${{ secrets.DB_FILENAME }}
           REPOSTORE_PATH: ${{ secrets.REPOSTORE_PATH }}
           API_HOST: ${{ secrets.API_HOST }}
-        run: bundle exec rake specdomain
+        run: bundle exec rake spec_all
