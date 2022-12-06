@@ -17,8 +17,11 @@ module LightofDay
       def store_lightofday(input)
         puts input
         lightofday = Repository::For.entity(input).create(input)
-
-        Success(Response::ApiResult.new(status: :created, message: lightofday))
+        if lightofday
+          Success(Response::ApiResult.new(status: :created, message: lightofday))
+        else
+          Failure(Response::ApiResult.new(status: :bad_request, message: nil))
+        end
       rescue StandardError
         Failure(
           Response::ApiResult.new(status: :internal_error, message: DB_ERR)
