@@ -46,4 +46,4 @@ jobs:
           DB_FILENAME: ${{ secrets.DB_FILENAME }}
           SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
           API_HOST: ${{ secrets.API_HOST }}
-        run: bundle exec rake spec_accept
+        run: bundle exec rake spec
