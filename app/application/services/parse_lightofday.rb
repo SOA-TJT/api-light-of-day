@@ -15,8 +15,8 @@ module LightofDay
 
       def parse_lightofday(input)
         inspiration_record = create_inspiration(input['inspiration'])
-        # view_record = create_view(input, inspiration_record)
-        # Success(view_record)
+        view_record = create_view(input, inspiration_record)
+        Success(view_record)
       end
 
       # help methods
