@@ -95,7 +95,7 @@ module LightofDay
           end
 
           routing.on 'view' do
-            # POST /api/v1/light-of-day/view/{origin_id}
+            # POST /api/v1/light-of-day/view
             routing.post do
               # need to be modify(next week)
               view_record = Service::ParseLightofday.new.call(routing.params)
