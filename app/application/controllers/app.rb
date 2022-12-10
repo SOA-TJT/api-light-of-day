@@ -95,10 +95,14 @@ module LightofDay
           end
 
           routing.on 'view' do
-            # POST /api/v1/light-of-day/view
+            # POST /api/v1/light-of-day/view?list={base64_json_array_of_project_fullnames}
             routing.post do
               # need to be modify(next week)
-              view_record = Service::ParseLightofday.new.call(routing.params)
+              list_req = Request::EncodedView.new(routing.params).call
+              testt = list_req.value!
+              puts 'json:', testt
+              puts testt.class
+              view_record = Service::ParseLightofday.new.call(list_req.value!)
               # puts view_record
 
               # store lightofday to DB
