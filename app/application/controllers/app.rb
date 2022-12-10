@@ -10,7 +10,7 @@ module LightofDay
   class App < Roda
     plugin :common_logger, $stderr
     plugin :halt
-    plugin :flash
+    plugin :caching
     plugin :all_verbs
     plugin :status_handler
 
@@ -117,6 +117,8 @@ module LightofDay
             routing.on String do |view_id|
               # GET /api/v1/light-of-day/view/{origin_id}
               routing.get do
+                response.cache_control public: true, max_age: 300
+
                 result = Service::GetLightofDay.new.call(view_id)
 
                 if result.failure?
@@ -126,7 +128,7 @@ module LightofDay
 
                 http_response = Representer::HttpResponse.new(result.value!)
                 response.status = http_response.http_status_code
-                puts result.value!
+
                 Representer::ViewLightofDay.new(
                   result.value!.message
                 ).to_json

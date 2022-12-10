@@ -7,6 +7,11 @@ ruby File.read('.ruby-version').strip
 gem 'figaro', '~> 1.2'
 gem 'rake'
 
+# Caching
+gem 'rack-cache', '~> 1.13'
+gem 'redis', '~> 4.8'
+gem 'redis-rack-cache', '~> 2.2'
+
 # PRESENTATION LAYER
 gem 'multi_json', '~> 1.15'
 gem 'roar', '~> 1.1'
