@@ -17,8 +17,8 @@ module LightofDay
       # Use in API to parse incoming list requests
       def call
         Success(
-          # JSON.parse(decode(@params['list']))
-          @params['list']
+          JSON.parse(decode(@params['list']))
+          # @params['list']
         )
       rescue StandardError
         Failure(

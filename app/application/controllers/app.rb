@@ -99,9 +99,6 @@ module LightofDay
             routing.post do
               # need to be modify(next week)
               list_req = Request::EncodedView.new(routing.params).call
-              testt = list_req.value!
-              puts 'json:', testt
-              puts testt.class
               view_record = Service::ParseLightofday.new.call(list_req.value!)
               # puts view_record
 
