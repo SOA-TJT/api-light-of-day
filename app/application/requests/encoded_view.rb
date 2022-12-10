@@ -7,7 +7,7 @@ require 'json'
 module LightofDay
   module Request
     # Project list request parser
-    class EncodedFavoriteList
+    class EncodedView
       include Dry::Monads::Result::Mixin
 
       def initialize(params)
@@ -18,13 +18,12 @@ module LightofDay
       def call
         Success(
           JSON.parse(decode(@params['list']))
-          # @params['list']
         )
       rescue StandardError
         Failure(
           Response::ApiResult.new(
             status: :bad_request,
-            message: 'Favorite list not found'
+            message: 'Project list not found'
           )
         )
       end
@@ -42,7 +41,7 @@ module LightofDay
 
       # Use in tests to create a ProjectList object from a list
       def self.to_request(list)
-        EncodedFavoriteList.new('list' => to_encoded(list))
+        EncodedProjectList.new('list' => to_encoded(list))
       end
     end
   end

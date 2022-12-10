@@ -27,7 +27,7 @@ module LightofDay
       end
 
       def retrieve_favorites(input)
-        Repository::For.klass(Unsplash::Entity::View).find_origin_ids(input[:list].split(','))
+        Repository::For.klass(Unsplash::Entity::View).find_origin_ids(input[:list])
                        .then { |favorite| Response::FavoriteList.new(favorite) }
                        .then { |list| Response::ApiResult.new(status: :ok, message: list) }
                        .then { |result| Success(result) }

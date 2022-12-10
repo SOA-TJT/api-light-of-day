@@ -14,27 +14,37 @@ module LightofDay
       private
 
       def parse_lightofday(input)
+        puts input['inspiration']
         inspiration_record = create_inspiration(input['inspiration'])
-        # view_record = create_view(input, inspiration_record)
-        # Success(view_record)
+        view_record = create_view(input, inspiration_record)
+        Success(view_record)
       end
 
       # help methods
       def create_inspiration(data)
-        inspiration_hash = eval(data)
+        # inspiration_hash = eval(data)
 
         LightofDay::FavQs::Entity::Inspiration.new(
           id: nil,
-          origin_id: inspiration_hash[:origin_id],
-          topics: inspiration_hash[:topics],
-          author: inspiration_hash[:author],
-          quote: inspiration_hash[:quote]
+          origin_id: data['origin_id'],
+          topics: data['topics'],
+          author: data['author'],
+          quote: data['quote']
         )
+
+        # LightofDay::FavQs::Entity::Inspiration.new(
+        #   id: nil,
+        #   origin_id: inspiration_hash[:origin_id],
+        #   topics: inspiration_hash[:topics],
+        #   author: inspiration_hash[:author],
+        #   quote: inspiration_hash[:quote]
+        # )
       end
 
       def create_view(data, inspiration)
         LightofDay::Unsplash::Entity::View.new(
-          id: data['id'].to_i,
+          # id: data['id'].to_i,
+          id: nil,
           origin_id: data['origin_id'],
           topics: data['topics'],
           width: data['width'].to_i,
