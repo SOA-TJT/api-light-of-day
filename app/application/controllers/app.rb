@@ -100,7 +100,6 @@ module LightofDay
               # need to be modify(next week)
               list_req = Request::EncodedView.new(routing.params).call
               view_record = Service::ParseLightofday.new.call(list_req.value!)
-              # puts view_record
 
               # store lightofday to DB
               result = Service::StoreLightofDay.new.call(view_record.value!)
