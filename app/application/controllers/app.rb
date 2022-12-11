@@ -80,6 +80,7 @@ module LightofDay
           routing.is do
             # GET /api/v1/light-of-day?list={origin_ids}
             routing.get do
+              response.cache_control public: true, max_age: 300
               list_req = Request::EncodedFavoriteList.new(routing.params)
               result = Service::ListFavorite.new.call(list_request: list_req)
 
