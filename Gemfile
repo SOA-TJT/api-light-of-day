@@ -31,6 +31,10 @@ gem 'hirb', '~> 0'
 gem 'hirb-unicode', '~> 0'
 gem 'sequel', '~> 5.49'
 
+# Asynchronicity
+gem 'aws-sdk-sqs', '~> 1.48'
+gem 'shoryuken', '~> 5.3'
+
 group :production do
   gem 'pg'
 end
