@@ -23,6 +23,8 @@ module VcrHelper
     VCR.configure do |c|
       c.cassette_library_dir = CASSETTES_FOLDER
       c.hook_into :webmock
+      vcr_config.ignore_hosts 'sqs.us-east-1.amazonaws.com'
+      vcr_config.ignore_hosts 'sqs.ap-northeast-1.amazonaws.com'
     end
   end
 
