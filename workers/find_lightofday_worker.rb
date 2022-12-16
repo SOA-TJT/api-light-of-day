@@ -14,7 +14,7 @@ class FindLightofdayWorker
     path: File.expand_path('config/secrets.yml')
   )
   Figaro.load
-  def self.config() = Figaro.env
+  def self.config = Figaro.env
 
   Shoryuken.sqs_client = Aws::SQS::Client.new(
     access_key_id: config.AWS_ACCESS_KEY_ID,
@@ -26,9 +26,12 @@ class FindLightofdayWorker
   shoryuken_options queue: config.CLONE_QUEUE_URL, auto_delete: true
 
   def perform(_sqs_msg, request)
-    project = LightofDay::Representer::ViewLightofDay
-      .new(OpenStruct.new).from_json(request)
-    LightofDay::GitRepo.new(project).clone
+    data = JSON.parse(request)
+    # project = LightofDay::Representer::ViewLightofDay
+    #   .new(OpenStruct.new).from_json(request)
+    LightofDay::Unsplash::ViewMapper
+      .new(App.config.UNSPLASH_SECRETS_KEY,
+           data['topic_id']).find_a_photo
   rescue LightofDay::GitRepo::Errors::CannotOverwriteLocalGitRepo
     puts 'CLONE EXISTS -- ignoring request'
   end
