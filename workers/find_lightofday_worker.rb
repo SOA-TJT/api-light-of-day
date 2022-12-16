@@ -32,7 +32,8 @@ class FindLightofdayWorker
     LightofDay::Unsplash::ViewMapper
       .new(App.config.UNSPLASH_SECRETS_KEY,
            data['topic_id']).find_a_photo
-  rescue LightofDay::GitRepo::Errors::CannotOverwriteLocalGitRepo
+  # rescue LightofDay::GitRepo::Errors::CannotOverwriteLocalGitRepo
+  rescue StandardError
     puts 'CLONE EXISTS -- ignoring request'
   end
 end
