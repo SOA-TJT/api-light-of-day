@@ -19,7 +19,7 @@ module LightofDay
       DB_ERR = 'Cannot access database'
       
       def request_random_lightofday_worker(input)
-        return Success(input) if input.exists_locally? # need to modify
+        # return Success(input) if input.exists_locally? # need to modify
 
         Messaging::Queue
           .new(App.config.CLONE_QUEUE_URL, App.config)
