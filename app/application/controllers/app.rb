@@ -58,6 +58,25 @@ module LightofDay
           end
         end
 
+        routing.on 'subscribe' do
+          # GET /api/v1/subscribe?email={user_email}&topic={topic_id}
+          routing.is do
+            routing.post do
+              subscribe_data = Request::SubscribeData.new(routing.params)
+              result = Service::SubscribeNew.new.call(subscribe_data)
+              puts result
+              if result.failure?
+                failed = Representer::HttpResponse.new(result.failure)
+                routing.halt failed.http_status_code, failed.to_json
+              end
+
+              http_response = Representer::HttpResponse.new(result.value!)
+              response.status = http_response.http_status_code
+              Representer::Subscribe.new(result.value!.message).to_json
+            end
+          end
+        end
+
         routing.on 'light-of-day' do
           routing.on 'random_view', String do |topic_slug|
             # GET /api/v1/light-of-day/random_view/{topic_slug}
