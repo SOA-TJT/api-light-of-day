@@ -25,6 +25,7 @@ module CodePraise
       #   q = Messaging::Queue.new(App.config.CLONE_QUEUE_URL)
       #   q.send({data: "hello"}.to_json)
       def send(message)
+        puts message
         @queue.send_message(message_body: message)
       end
 

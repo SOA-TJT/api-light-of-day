@@ -20,14 +20,16 @@ module LightofDay
 
       def request_random_lightofday_worker(input)
         # return Success(input) if input.exists_locally? # need to modify
+        a = { 'topic_id' => input }.to_json
+        puts a
 
         Messaging::Queue
           .new(App.config.CLONE_QUEUE_URL, App.config)
           .send({ 'topic_id' => input }.to_json)
 
         Failure(Response::ApiResult.new(status: :processing, message: PROCESSING_MSG))
-      rescue StandardError => e
-        print_error(e)
+      rescue StandardError
+        # print_error(e)
         Failure(Response::ApiResult.new(status: :internal_error, message: FIND_ERR))
       end
 
