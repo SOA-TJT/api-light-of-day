@@ -2,7 +2,7 @@
 
 require 'aws-sdk-sqs'
 
-module CodePraise
+module LightofDay
   module Messaging
     ## Queue wrapper for AWS SQS
     # Requires: AWS credentials loaded in ENV or through config file
@@ -25,7 +25,6 @@ module CodePraise
       #   q = Messaging::Queue.new(App.config.CLONE_QUEUE_URL)
       #   q.send({data: "hello"}.to_json)
       def send(message)
-        puts message
         @queue.send_message(message_body: message)
       end
 
