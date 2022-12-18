@@ -35,6 +35,9 @@ gem 'sequel', '~> 5.49'
 gem 'aws-sdk-sqs', '~> 1.48'
 gem 'shoryuken', '~> 5.3'
 
+# Subcription
+gem 'aws-sdk-ses'
+
 group :production do
   gem 'pg'
 end

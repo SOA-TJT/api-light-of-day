@@ -27,13 +27,21 @@ class FindLightofdayWorker
 
   def perform(_sqs_msg, request)
     data = JSON.parse(request)
-    # project = LightofDay::Representer::ViewLightofDay
-    #   .new(OpenStruct.new).from_json(request)
     LightofDay::Unsplash::ViewMapper
-      .new(App.config.UNSPLASH_SECRETS_KEY,
-           data['topic_id']).find_a_photo
-  # rescue LightofDay::GitRepo::Errors::CannotOverwriteLocalGitRepo
+                .new(LightofDay::App.config.UNSPLASH_SECRETS_KEY,
+                     data['topic_id']).find_a_photo
+
   rescue StandardError
-    puts 'CLONE EXISTS -- ignoring request'
+    puts 'perform error'
+  end
+
+  def generate_email(lightofday)
+    puts lightofday
+  end
+
+  def send_email(email, body)
+    LightofDay::Messaging::Email
+                .new
+                .send(email, body)
   end
 end
