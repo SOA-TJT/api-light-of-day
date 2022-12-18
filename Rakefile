@@ -211,7 +211,8 @@ namespace :worker do
   namespace :run do
     desc 'Run the background cloning worker in development mode'
     task :dev => :config do
-      sh 'RACK_ENV=development bundle exec shoryuken -r ./workers/find_lightofday_worker.rb -C ./workers/shoryuken_dev.yml'
+      # sh 'RACK_ENV=development bundle exec shoryuken -r ./workers/find_lightofday_worker.rb  -C ./workers/shoryuken_dev.yml'
+      sh 'RACK_ENV=development bundle exec shoryuken -r ./workers/subscribe_lightofday_worker.rb -C ./workers/shoryuken_dev.yml'
     end
 
     desc 'Run the background cloning worker in testing mode'

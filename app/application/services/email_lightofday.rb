@@ -15,8 +15,8 @@ module LightofDay
 
       def send_lightofday_worker(input)
         # Messaging::Queue
-        #   .new(App.config.CLONE_QUEUE_URL, App.config)
-        #   .send({ 'email' => input.email, 'topic_id' => input.topic_id }.to_json)
+        #   .new(App.config.SUBSCRIBE_QUEUE_URL, App.config)
+        #   .send({ 'action' => 'send', 'email' => input.email, 'topic_id' => input.topic_id }.to_json)
 
         Messaging::Email.new.send(input.email, input.topic_id)
         Success(Response::ApiResult.new(status: :ok, message: input))

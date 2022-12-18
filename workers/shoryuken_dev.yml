@@ -1,2 +1,2 @@
 queues:
-  - https://sqs.us-east-1.amazonaws.com/662471544988/lightofday-dev
+  - https://sqs.us-east-2.amazonaws.com/938467338234/lightofday-subscribe
