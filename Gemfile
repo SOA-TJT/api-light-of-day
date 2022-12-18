@@ -7,6 +7,11 @@ ruby File.read('.ruby-version').strip
 gem 'figaro', '~> 1.2'
 gem 'rake'
 
+# Caching
+gem 'rack-cache', '~> 1.13'
+gem 'redis', '~> 4.8'
+gem 'redis-rack-cache', '~> 2.2'
+
 # PRESENTATION LAYER
 gem 'multi_json', '~> 1.15'
 gem 'roar', '~> 1.1'
@@ -25,6 +30,13 @@ gem 'http', '~> 5'
 gem 'hirb', '~> 0'
 gem 'hirb-unicode', '~> 0'
 gem 'sequel', '~> 5.49'
+
+# Asynchronicity
+gem 'aws-sdk-sqs', '~> 1.48'
+gem 'shoryuken', '~> 5.3'
+
+# Subcription
+gem 'aws-sdk-ses'
 
 group :production do
   gem 'pg'

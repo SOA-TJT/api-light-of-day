@@ -10,7 +10,7 @@ module LightofDay
   class App < Roda
     plugin :common_logger, $stderr
     plugin :halt
-    plugin :flash
+    plugin :caching
     plugin :all_verbs
     plugin :status_handler
 
@@ -58,6 +58,43 @@ module LightofDay
           end
         end
 
+        routing.on 'subscribe' do
+          # GET /api/v1/subscribe?email={user_email}&topic={topic_id}
+          routing.is do
+            routing.post do
+              subscribe_data = Request::SubscribeData.new(routing.params)
+              result = Service::SubscribeEmail.new.call(subscribe_data)
+              if result.failure?
+                failed = Representer::HttpResponse.new(result.failure)
+                routing.halt failed.http_status_code, failed.to_json
+              end
+
+              http_response = Representer::HttpResponse.new(result.value!)
+              response.status = http_response.http_status_code
+              Representer::Subscribe.new(result.value!.message).to_json
+            end
+          end
+        end
+
+        routing.on 'send' do
+          # GET /api/v1/subscribe?email={user_email}&topic={topic_id}
+          routing.is do
+            routing.post do
+              subscribe_data = Request::SubscribeData.new(routing.params)
+              result = Service::EmailLightOfDay.new.call(subscribe_data)
+              # result = Service::FindLightofDay.new.call(routing.params['topic_id'])
+              if result.failure?
+                failed = Representer::HttpResponse.new(result.failure)
+                routing.halt failed.http_status_code, failed.to_json
+              end
+
+              http_response = Representer::HttpResponse.new(result.value!)
+              response.status = http_response.http_status_code
+              Representer::Subscribe.new(result.value!.message).to_json
+            end
+          end
+        end
+
         routing.on 'light-of-day' do
           routing.on 'random_view', String do |topic_slug|
             # GET /api/v1/light-of-day/random_view/{topic_slug}
@@ -80,6 +117,7 @@ module LightofDay
           routing.is do
             # GET /api/v1/light-of-day?list={origin_ids}
             routing.get do
+              response.cache_control public: true, max_age: 300
               list_req = Request::EncodedFavoriteList.new(routing.params)
               result = Service::ListFavorite.new.call(list_request: list_req)
 
@@ -117,6 +155,8 @@ module LightofDay
             routing.on String do |view_id|
               # GET /api/v1/light-of-day/view/{origin_id}
               routing.get do
+                response.cache_control public: true, max_age: 300
+
                 result = Service::GetLightofDay.new.call(view_id)
 
                 if result.failure?
@@ -126,7 +166,7 @@ module LightofDay
 
                 http_response = Representer::HttpResponse.new(result.value!)
                 response.status = http_response.http_status_code
-                puts result.value!
+
                 Representer::ViewLightofDay.new(
                   result.value!.message
                 ).to_json
