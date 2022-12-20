@@ -24,7 +24,7 @@ module LightofDay
         puts a
 
         Messaging::Queue
-          .new(App.config.CLONE_QUEUE_URL, App.config)
+          .new(App.config.FAVORITE_QUEUE_URL, App.config)
           .send({ 'topic_id' => input }.to_json)
 
         Failure(Response::ApiResult.new(status: :processing, message: PROCESSING_MSG))
