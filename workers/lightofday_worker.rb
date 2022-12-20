@@ -23,7 +23,7 @@ class FindLightofdayWorker
   )
 
   include Shoryuken::Worker
-  shoryuken_options queue: config.CLONE_QUEUE_URL, auto_delete: true
+  shoryuken_options queue: config.FAVORITE_QUEUE_URL, auto_delete: true
 
   def perform(_sqs_msg, request)
     data = JSON.parse(request)
