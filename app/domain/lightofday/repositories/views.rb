@@ -11,6 +11,7 @@ module LightofDay
       end
 
       def self.find(entity)
+        puts "id:", entity.origin_id
         find_origin_id(entity.origin_id)
       end
 

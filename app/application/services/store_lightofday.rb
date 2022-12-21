@@ -19,7 +19,7 @@ module LightofDay
 
       def request_lightofday_worker(input)
         # a = input.value!
-        # puts "input:", a
+        puts "input:", input
         result = Repository::For.entity(input).find(input)
         puts 'find result:', result
         return Success(input) unless result.nil? # need to modify
