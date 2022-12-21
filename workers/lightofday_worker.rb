@@ -27,7 +27,8 @@ class FindLightofdayWorker
 
   def perform(_sqs_msg, request)
     data = JSON.parse(request)
-    puts data
+    puts 'data:',data
+    Repository::For.entity(data['input']).create(data['input'])
     # LightofDay::Unsplash::ViewMapper
     #             .new(LightofDay::App.config.UNSPLASH_SECRETS_KEY,
     #                  data['topic_id']).find_a_photo

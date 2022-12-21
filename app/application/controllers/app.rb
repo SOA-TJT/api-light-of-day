@@ -141,6 +141,7 @@ module LightofDay
 
               # store lightofday to DB
               result = Service::StoreLightofDay.new.call(view_record.value!)
+              puts 'view_record:', result
 
               if result.failure?
                 failed = Representer::HttpResponse.new(result.failure)

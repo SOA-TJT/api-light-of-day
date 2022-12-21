@@ -8,20 +8,29 @@ module LightofDay
     class StoreLightofDay
       include Dry::Transaction
 
+      step :request_lightofday_worker
       step :store_lightofday
 
       private
 
+      FIND_ERR = 'Could not find this lightofday'
+      PROCESSING_MSG = 'Processing the summary request'
       DB_ERR = 'Cannot access database'
 
-      def request_random_lightofday_worker(input)
-        return Success(input) if input.exists_locally? # need to modify
+      def request_lightofday_worker(input)
+        # a = input.value!
+        # puts "input:", a
+        result = Repository::For.entity(input).find(input)
+        puts 'find result:', result
+        return Success(input) unless result.nil? # need to modify
         a = { 'topic_id' => input }.to_json
         puts a
 
         Messaging::Queue
           .new(App.config.FAVORITE_QUEUE_URL, App.config)
-          .send({ 'topic_id' => input }.to_json)
+          .send({ 'input' => input }.to_json)
+          # .send(Representer::ViewLightofDay.new(input).to_json)
+        puts 'test'
 
         Failure(Response::ApiResult.new(status: :processing, message: PROCESSING_MSG))
       rescue StandardError
@@ -31,7 +40,7 @@ module LightofDay
       
       def store_lightofday(input)
         puts input
-        lightofday = Repository::For.entity(input).create(input)
+        lightofday = Repository::For.entity(input).find(input)
         if lightofday
           Success(Response::ApiResult.new(status: :created, message: lightofday))
         else
