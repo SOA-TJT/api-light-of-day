@@ -135,12 +135,16 @@ module LightofDay
           routing.on 'view' do
             # POST /api/v1/light-of-day/view?list={base64_json_array_of_project_fullnames}
             routing.post do
-              # need to be modify(next week)
+              request_id = [request.env, request.path, Time.now.to_f].hash
+
               list_req = Request::EncodedView.new(routing.params).call
               # view_record = Service::ParseLightofday.new.call(list_req.value!)
 
               # store lightofday to DB
-              result = Service::StoreLightofDay.new.call(list_req.value!)
+              result = Service::StoreLightofDay.new.call(
+                requested: list_req.value!,
+                request_id: request_id,
+                config: App.config)
               puts 'view_record:', result
 
               if result.failure?

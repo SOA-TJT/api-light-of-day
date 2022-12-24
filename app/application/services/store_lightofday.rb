@@ -14,24 +14,29 @@ module LightofDay
       private
 
       FIND_ERR = 'Could not find this lightofday'
-      PROCESSING_MSG = 'Processing the summary request'
+      PROCESSING_MSG = 'Storing the Light of Day'
       DB_ERR = 'Cannot access database'
 
       def request_lightofday_worker(input)
         puts "input:", input
-        result = Repository::Store.new.exists_locally(input['origin_id'])
+        input[:result] = Repository::Store.new.exists_locally(input[:requested]['origin_id'])
         puts "result:", result
         return Success(input) unless result.nil? # need to modify
-        # a = { 'topic_id' => input }.to_json
         puts "result is nil!"
 
-        Messaging::Queue
-          .new(App.config.FAVORITE_QUEUE_URL, App.config)
-          .send({ 'input' => input }.to_json)
+        # Messaging::Queue
+        #   .new(App.config.FAVORITE_QUEUE_URL, App.config)
+        #   .send({ 'input' => input }.to_json)
+        Messaging::Queue.new(App.config.FAVORITE_QUEUE_URL, App.config)
+          .send(store_request_json(input))
         # test = Representer::ViewLightofDay.new(input).to_json
+          Failure(Response::ApiResult.new(
+            status: :processing,
+            message: { request_id: input[:request_id], msg: PROCESSING_MSG }
+          ))
         puts 'test'
 
-        Failure(Response::ApiResult.new(status: :processing, message: PROCESSING_MSG))
+        # Failure(Response::ApiResult.new(status: :processing, message: PROCESSING_MSG))
       rescue StandardError
         # print_error(e)
         Failure(Response::ApiResult.new(status: :internal_error, message: FIND_ERR))
@@ -50,6 +55,12 @@ module LightofDay
         Failure(
           Response::ApiResult.new(status: :internal_error, message: DB_ERR)
         )
+      end
+
+      def store_request_json(input)
+        Response::StoreRequest.new(input[:result], input[:request_id])
+          .then { Representer::StoreRequest.new(_1) }
+          .then(&:to_json)
       end
     end
   end
