@@ -32,8 +32,12 @@ gem 'hirb-unicode', '~> 0'
 gem 'sequel', '~> 5.49'
 
 # Asynchronicity
+gem 'concurrent-ruby', '~> 1.1'
 gem 'aws-sdk-sqs', '~> 1.48'
+
+# WORKER
 gem 'shoryuken', '~> 5.3'
+gem 'faye', '~> 1.4'
 
 # Subcription
 gem 'aws-sdk-ses'

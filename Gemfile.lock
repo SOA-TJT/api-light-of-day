@@ -244,6 +244,7 @@ PLATFORMS
 DEPENDENCIES
   aws-sdk-ses
   aws-sdk-sqs (~> 1.48)
+  concurrent-ruby (~> 1.1)
   dry-monads (~> 1.4)
   dry-struct (~> 1)
   dry-transaction (~> 0.13)
