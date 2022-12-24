@@ -28,13 +28,17 @@ class FindLightofdayWorker
   def perform(_sqs_msg, request)
     data = JSON.parse(request)
     puts 'data:',data['input']
-    result = LightofDay::Repository::For.entity(data['input'])
+    LightofDay::Repository::Store.new.parse_lightofday(data['input'])
+    # data = LightofDay::Representer::ViewLightofDay
+    #   .new(Struct.new).from_json(request)
+    # puts 'data:', data
+    # result = LightofDay::Repository::For.entity(data)
     # result = LightofDay::Repository::For.entity(data['input']).create(data['input'])
     # LightofDay::Unsplash::ViewMapper
     #             .new(LightofDay::App.config.UNSPLASH_SECRETS_KEY,
     #                  data['topic_id']).find_a_photo
-    puts 'result:', result
-  # rescue StandardError
+    # puts 'result:', result
+  rescue StandardError
     puts 'perform error'
   end
 end

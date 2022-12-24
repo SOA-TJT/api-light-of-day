@@ -137,10 +137,10 @@ module LightofDay
             routing.post do
               # need to be modify(next week)
               list_req = Request::EncodedView.new(routing.params).call
-              view_record = Service::ParseLightofday.new.call(list_req.value!)
+              # view_record = Service::ParseLightofday.new.call(list_req.value!)
 
               # store lightofday to DB
-              result = Service::StoreLightofDay.new.call(view_record.value!)
+              result = Service::StoreLightofDay.new.call(list_req.value!)
               puts 'view_record:', result
 
               if result.failure?

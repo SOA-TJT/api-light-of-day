@@ -18,18 +18,17 @@ module LightofDay
       DB_ERR = 'Cannot access database'
 
       def request_lightofday_worker(input)
-        # a = input.value!
         puts "input:", input
-        result = Repository::For.entity(input).find(input)
-        puts 'find result:', result
+        result = Repository::Store.new.exists_locally(input['origin_id'])
+        puts "result:", result
         return Success(input) unless result.nil? # need to modify
-        a = { 'topic_id' => input }.to_json
-        puts a
+        # a = { 'topic_id' => input }.to_json
+        puts "result is nil!"
 
         Messaging::Queue
           .new(App.config.FAVORITE_QUEUE_URL, App.config)
           .send({ 'input' => input }.to_json)
-          # .send(Representer::ViewLightofDay.new(input).to_json)
+        # test = Representer::ViewLightofDay.new(input).to_json
         puts 'test'
 
         Failure(Response::ApiResult.new(status: :processing, message: PROCESSING_MSG))
@@ -40,7 +39,8 @@ module LightofDay
       
       def store_lightofday(input)
         puts input
-        lightofday = Repository::For.entity(input).find(input)
+        # lightofday = Repository::For.entity(input).find(input)
+        lightofday = Repository::Store.new.exists_locally(input['origin_id'])
         if lightofday
           Success(Response::ApiResult.new(status: :created, message: lightofday))
         else
