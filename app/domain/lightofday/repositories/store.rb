@@ -12,6 +12,7 @@ module LightofDay
         inspiration_record = create_inspiration(input['inspiration'])
         view_record = create_view(input, inspiration_record)
         # Success(view_record)
+        puts 'view_record:', view_record
         Repository::For.entity(view_record).create(view_record)
       end
 
