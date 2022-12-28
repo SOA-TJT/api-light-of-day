@@ -8,10 +8,11 @@ module LightofdayWorker
     attr_accessor :lightofday
 
     def initialize(request_json, config)
+      puts 'request_json', request_json
       store_request = LightofDay::Representer::StoreRequest
-        .new(OpenStruct.new)
-        .from_json(request_json)
-
+                      .new(OpenStruct.new)
+                      .from_json(request_json)
+      puts 'store_request:', store_request
       @lightofday = store_request.lightofday
       @publisher = ProgressPublisher.new(config, store_request.id)
     end

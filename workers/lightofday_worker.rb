@@ -1,13 +1,16 @@
 # frozen_string_literal: true
 
 require_relative '../require_app'
+require_relative 'job_reporter'
+require_relative 'store_monitor'
+
 require_app
 
 require 'figaro'
 require 'shoryuken'
 
 module LightofdayWorker
-# Shoryuken worker class to clone repos in parallel
+  # Shoryuken worker class to clone repos in parallel
   class FindLightofdayWorker
     # Environment variables setup
     Figaro.application = Figaro::Application.new(
@@ -29,16 +32,16 @@ module LightofdayWorker
 
     def perform(_sqs_msg, request)
       # data = JSON.parse(request)
-      puts 'request:',request
-      job = JobReporter.new(request, Worker.config)
-      puts 'job:',job.lightofday
-      job.report(StoreMonitor.starting_percent)
+      puts 'request:', request
+      job = LightofdayWorker::JobReporter.new(request, FindLightofdayWorker.config)
+      puts 'job:', job.lightofday
+      job.report(LightofdayWorker::StoreMonitor.starting_percent)
       LightofDay::Repository::Store.new.parse_lightofday(job.lightofday.origin_id) do |line|
         job.report StoreMonitor.progress(line)
       end
 
       # Keep sending finished status to any latecoming subscribers
-      job.report_each_second(5) { CloneMonitor.finished_percent }
+      job.report_each_second(5) { StoreMonitor.finished_percent }
 
       # LightofDay::Repository::Store.new.parse_lightofday(data['input'])
 
@@ -51,7 +54,7 @@ module LightofdayWorker
       #             .new(LightofDay::App.config.UNSPLASH_SECRETS_KEY,
       #                  data['topic_id']).find_a_photo
       # puts 'result:', result
-    rescue StandardError
+      # rescue StandardError
       puts 'perform error'
     end
   end
@@ -91,7 +94,7 @@ module LightofdayWorker
 
     def generate_email
       lightofday = LightofDay::Unsplash::ViewMapper
-                  .new(LightofDay::App.config.UNSPLASH_SECRETS_KEY,
+                   .new(LightofDay::App.config.UNSPLASH_SECRETS_KEY,
                         data['topic_id']).find_a_photo
       puts lightofday
     end
