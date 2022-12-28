@@ -11,7 +11,8 @@ module LightofDay
     class StoreRequest < Roar::Decorator
       include Roar::JSON
 
-      property :lightofday, extend: Representer::ViewLightofDay, class: OpenStruct
+      # property :lightofday, extend: Representer::ViewLightofDay, class: OpenStruct
+      property :lightofday
       property :id
     end
   end

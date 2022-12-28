@@ -18,23 +18,24 @@ module LightofDay
       DB_ERR = 'Cannot access database'
 
       def request_lightofday_worker(input)
-        puts "input:", input
+        puts 'input:', input
         input[:result] = Repository::Store.new.exists_locally(input[:requested]['origin_id'])
-        puts "result:", input[:result]
+        puts 'result:', input[:result]
         return Success(input) unless input[:result].nil? # need to modify
-        puts "result is nil!"
+
+        puts 'result is nil!'
 
         # Messaging::Queue
         #   .new(App.config.FAVORITE_QUEUE_URL, App.config)
         #   .send({ 'input' => input }.to_json)
-        puts "json:", store_request_json(input)
+        puts 'json:', store_request_json(input)
         Messaging::Queue.new(App.config.FAVORITE_QUEUE_URL, App.config)
-          .send(store_request_json(input))
+                        .send(store_request_json(input))
         # test = Representer::ViewLightofDay.new(input).to_json
-          Failure(Response::ApiResult.new(
-            status: :processing,
-            message: { request_id: input[:request_id], msg: PROCESSING_MSG }
-          ))
+        Failure(Response::ApiResult.new(
+                  status: :processing,
+                  message: { request_id: input[:request_id], msg: PROCESSING_MSG }
+                ))
         puts 'test'
 
         # Failure(Response::ApiResult.new(status: :processing, message: PROCESSING_MSG))
@@ -42,7 +43,7 @@ module LightofDay
         # print_error(e)
         Failure(Response::ApiResult.new(status: :internal_error, message: FIND_ERR))
       end
-      
+
       def store_lightofday(input)
         puts input
         # lightofday = Repository::For.entity(input).find(input)
@@ -59,13 +60,21 @@ module LightofDay
       end
 
       def store_request_json(input)
-        Response::StoreRequest.new(input[:requested], input[:request_id])
-          .then { 
-            
-            Representer::StoreRequest.new(_1) 
-            # puts "Store Request", _1
-          }
-          .then(&:to_json)
+        store_response = Response::StoreRequest.new(input[:requested], input[:request_id])
+        # store_response = Response::StoreRequest.new(nil, input[:request_id])
+        puts 'Hash to json', input[:requested].to_json
+        puts 'response:', store_response
+        store_representer = Representer::StoreRequest.new(store_response)
+        puts 'representer', store_representer
+        # puts 'representer', store_representer.lightofday
+        puts 'representer tojson:', store_representer.to_json
+        store_representer.to_json
+        # Response::StoreRequest.new(input[:requested], input[:request_id])
+        #                       .then do
+        #   Representer::StoreRequest.new(_1)
+        #   # puts "Store Request", _1
+        # end
+        # .then(&:to_json)
       end
     end
   end
