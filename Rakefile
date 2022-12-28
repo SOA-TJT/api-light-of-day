@@ -36,7 +36,7 @@ task :new_session_secret do
 end
 
 task :run do
-  sh 'bundle exec puma -p 9090'
+  sh 'bundle exec puma config.ru -p 9090'
 end
 
 task :rerun do

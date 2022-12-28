@@ -2,6 +2,7 @@
 
 require_relative 'progress_publisher'
 
+
 module LightofdayWorker
   # Reports job progress to client
   class JobReporter
@@ -11,7 +12,7 @@ module LightofdayWorker
       store_request = LightofDay::Representer::StoreRequest
         .new(OpenStruct.new)
         .from_json(request_json)
-
+      puts "s_r", store_request
       @lightofday = store_request.lightofday
       @publisher = ProgressPublisher.new(config, store_request.id)
     end
