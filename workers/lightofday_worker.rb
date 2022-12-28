@@ -35,8 +35,8 @@ module LightofdayWorker
       puts 'request:', request
       job = LightofdayWorker::JobReporter.new(request, FindLightofdayWorker.config)
       puts 'job:', job.lightofday
-      job.report(LightofdayWorker::StoreMonitor.starting_percent)
-      LightofDay::Repository::Store.new.parse_lightofday(job.lightofday.origin_id) do |line|
+      job.report(StoreMonitor.starting_percent)
+      LightofDay::Repository::Store.new.parse_lightofday(job.lightofday) do |line|
         job.report StoreMonitor.progress(line)
       end
 
@@ -54,7 +54,7 @@ module LightofdayWorker
       #             .new(LightofDay::App.config.UNSPLASH_SECRETS_KEY,
       #                  data['topic_id']).find_a_photo
       # puts 'result:', result
-      # rescue StandardError
+    rescue StandardError
       puts 'perform error'
     end
   end
