@@ -20,13 +20,14 @@ module LightofDay
       def request_lightofday_worker(input)
         puts "input:", input
         input[:result] = Repository::Store.new.exists_locally(input[:requested]['origin_id'])
-        puts "result:", result
-        return Success(input) unless result.nil? # need to modify
+        puts "result:", input[:result]
+        return Success(input) unless input[:result].nil? # need to modify
         puts "result is nil!"
 
         # Messaging::Queue
         #   .new(App.config.FAVORITE_QUEUE_URL, App.config)
         #   .send({ 'input' => input }.to_json)
+        puts "json:", store_request_json(input)
         Messaging::Queue.new(App.config.FAVORITE_QUEUE_URL, App.config)
           .send(store_request_json(input))
         # test = Representer::ViewLightofDay.new(input).to_json
@@ -58,8 +59,12 @@ module LightofDay
       end
 
       def store_request_json(input)
-        Response::StoreRequest.new(input[:result], input[:request_id])
-          .then { Representer::StoreRequest.new(_1) }
+        Response::StoreRequest.new(input[:requested], input[:request_id])
+          .then { 
+            
+            Representer::StoreRequest.new(_1) 
+            # puts "Store Request", _1
+          }
           .then(&:to_json)
       end
     end
