@@ -32,11 +32,11 @@ module LightofDay
         Messaging::Queue.new(App.config.FAVORITE_QUEUE_URL, App.config)
                         .send(store_request_json(input))
         # test = Representer::ViewLightofDay.new(input).to_json
-        Failure(Response::ApiResult.new(
-                  status: :processing,
-                  message: { request_id: input[:request_id], msg: PROCESSING_MSG }
-                ))
-        puts 'test'
+          Failure(Response::ApiResult.new(
+                    status: :processing,
+                    message: { request_id: input[:request_id], msg: PROCESSING_MSG }
+                  ))
+        # puts 'test'
 
         # Failure(Response::ApiResult.new(status: :processing, message: PROCESSING_MSG))
       rescue StandardError
