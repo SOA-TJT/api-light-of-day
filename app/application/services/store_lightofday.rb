@@ -60,21 +60,20 @@ module LightofDay
       end
 
       def store_request_json(input)
-        store_response = Response::StoreRequest.new(input[:requested], input[:request_id])
-        # store_response = Response::StoreRequest.new(nil, input[:request_id])
-        puts 'Hash to json', input[:requested].to_json
-        puts 'response:', store_response
-        store_representer = Representer::StoreRequest.new(store_response)
-        puts 'representer', store_representer
-        # puts 'representer', store_representer.lightofday
-        puts 'representer tojson:', store_representer.to_json
-        store_representer.to_json
-        # Response::StoreRequest.new(input[:requested], input[:request_id])
-        #                       .then do
-        #   Representer::StoreRequest.new(_1)
-        #   # puts "Store Request", _1
-        # end
-        # .then(&:to_json)
+        # store_response = Response::StoreRequest.new(input[:requested], input[:request_id])
+        # puts 'Hash to json', input[:requested].to_json
+        # puts 'response:', store_response
+        # store_representer = Representer::StoreRequest.new(store_response)
+        # puts 'representer', store_representer
+        # # puts 'representer', store_representer.lightofday
+        # puts 'representer tojson:', store_representer.to_json
+        # store_representer.to_json
+        Response::StoreRequest.new(input[:requested], input[:request_id])
+                              .then do
+          Representer::StoreRequest.new(_1)
+          # puts "Store Request", _1
+        end
+                              .then(&:to_json)
       end
     end
   end
