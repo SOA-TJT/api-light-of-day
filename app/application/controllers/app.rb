@@ -94,6 +94,40 @@ module LightofDay
             end
           end
         end
+        routing.on 'focus' do
+          routing.is String, String do |rest_time, work_time|
+            # GET /api/v1/focus/resttime/worktime
+            routing.get do
+              # store focus to db
+              result = Service::StoreFocus.new.call(
+                work_time, rest_time
+              )
+              if result.failure?
+                failed = Representer::HttpResponse.new(result.failure)
+                routing.halt failed.http_status_code, failed.to_json
+              end
+
+              http_response = Representer::HttpResponse.new(result.value!)
+              response.status = http_response.http_status_code
+              Representer::Focus.new(result.value!.message).to_json
+            end
+          end
+          routing.on 'week-statistic' do
+            routing.get do
+              # GET /api/v1/focus/week-statistic
+              result = Service::AnalyzeFocus.new.call
+
+              if result.failure?
+                failed = Representer::HttpResponse.new(result.failure)
+                routing.halt failed.http_status_code, failed.to_json
+              end
+              puts result.value!
+              http_response = Representer::HttpResponse.new(result.value!)
+              response.status = http_response.http_status_code
+              Representer::DailyFocuses.new(result.value!.message).to_json
+            end
+          end
+        end
 
         routing.on 'light-of-day' do
           routing.on 'random_view', String do |topic_slug|
@@ -143,8 +177,9 @@ module LightofDay
               # store lightofday to DB
               result = Service::StoreLightofDay.new.call(
                 requested: list_req.value!,
-                request_id: request_id,
-                config: App.config)
+                request_id:,
+                config: App.config
+              )
               puts 'view_record:', result
 
               if result.failure?
