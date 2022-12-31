@@ -2,6 +2,7 @@
 
 require_relative 'views'
 require_relative 'inspirations'
+require_relative '../../focus/repositories/focuses'
 
 module LightofDay
   module Repository
@@ -9,7 +10,8 @@ module LightofDay
     module For
       ENTITY_REPOSITORY = {
         LightofDay::Unsplash::Entity::View => Views,
-        LightofDay::FavQs::Entity::Inspiration => Inspirations
+        LightofDay::FavQs::Entity::Inspiration => Inspirations,
+        LightofDay::OwnDb::Entity::Focus => LightofDay::Repository::Focuses
       }.freeze
       def self.klass(entity_klass)
         ENTITY_REPOSITORY[entity_klass]
