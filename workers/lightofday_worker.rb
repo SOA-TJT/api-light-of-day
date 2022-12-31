@@ -33,11 +33,13 @@ module LightofdayWorker
     def perform(_sqs_msg, request)
       # data = JSON.parse(request)
       puts 'request:', request
-      job = LightofdayWorker::JobReporter.new(request, FindLightofdayWorker.config)
+      job = JobReporter.new(request, FindLightofdayWorker.config)
       puts 'job:', job.lightofday
       job.report(StoreMonitor.starting_percent)
       LightofDay::Repository::Store.new.parse_lightofday(job.lightofday) do |line|
+        puts 'job start'
         job.report StoreMonitor.progress(line)
+        puts 'job end'
       end
 
       # Keep sending finished status to any latecoming subscribers
