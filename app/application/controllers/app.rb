@@ -77,12 +77,10 @@ module LightofDay
         end
 
         routing.on 'send' do
-          # GET /api/v1/subscribe?email={user_email}&topic={topic_id}
+          # GET /api/v1/send
           routing.is do
-            routing.post do
-              subscribe_data = Request::SubscribeData.new(routing.params)
-              result = Service::EmailLightOfDay.new.call(subscribe_data)
-              # result = Service::FindLightofDay.new.call(routing.params['topic_id'])
+            routing.get do
+              result = Service::EmailLightOfDay.new.call
               if result.failure?
                 failed = Representer::HttpResponse.new(result.failure)
                 routing.halt failed.http_status_code, failed.to_json
@@ -90,7 +88,7 @@ module LightofDay
 
               http_response = Representer::HttpResponse.new(result.value!)
               response.status = http_response.http_status_code
-              Representer::Subscribe.new(result.value!.message).to_json
+              Representer::Email.new(result.value!.message).to_json
             end
           end
         end

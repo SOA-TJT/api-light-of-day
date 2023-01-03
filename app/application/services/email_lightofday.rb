@@ -13,14 +13,13 @@ module LightofDay
       AWS_ERR = 'Cannot access aws'
       PROCESSING_MSG = 'Processing the random view request'
 
-      def send_lightofday_worker(input)
-        # Messaging::Queue
-        #   .new(App.config.SUBSCRIBE_QUEUE_URL, App.config)
-        #   .send({ 'action' => 'send', 'email' => input.email, 'topic_id' => input.topic_id }.to_json)
-
-        Messaging::Email.new.send(input.email, input.topic_id)
-        Success(Response::ApiResult.new(status: :ok, message: input))
-        # Failure(Response::ApiResult.new(status: :processing, message: PROCESSING_MSG))
+      def send_lightofday_worker
+        # result = Messaging::Email.new.send_all
+        # Success(Response::ApiResult.new(status: :ok, message: result))
+        Messaging::Queue
+          .new(App.config.SUBSCRIBE_QUEUE_URL, App.config)
+          .send({ 'action' => 'send' }.to_json)
+        Failure(Response::ApiResult.new(status: :processing, message: PROCESSING_MSG))
       rescue StandardError
         Failure(
           Response::ApiResult.new(status: :internal_error, message: AWS_ERR)

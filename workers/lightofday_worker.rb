@@ -83,6 +83,7 @@ module LightofdayWorker
     def perform(_sqs_msg, request)
       data = JSON.parse(request)
       subscribe(data['email']) if data['action'] == 'subscribe'
+      ses_send if data['action'] == 'send'
     rescue StandardError => e
       puts "Action not success. Error message: #{e}"
     end
@@ -94,15 +95,8 @@ module LightofdayWorker
         .subscribe(email)
     end
 
-    def generate_email
-      lightofday = LightofDay::Unsplash::ViewMapper
-                   .new(LightofDay::App.config.UNSPLASH_SECRETS_KEY,
-                        data['topic_id']).find_a_photo
-      puts lightofday
-    end
-
-    def send_email(email, body)
-      LightofDay::Messaging::Email.new.send(email, body)
+    def ses_send
+      LightofDay::Messaging::Email.new.send_all
     end
   end
 end
