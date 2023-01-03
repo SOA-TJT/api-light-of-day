@@ -13,9 +13,9 @@ gem 'redis', '~> 4.8'
 gem 'redis-rack-cache', '~> 2.2'
 
 # PRESENTATION LAYER
+gem 'libxml-ruby', '~> 2.8'
 gem 'multi_json', '~> 1.15'
 gem 'roar', '~> 1.1'
-
 # Web Application
 gem 'json', '~> 2.6.2'
 gem 'puma', '~> 5'
