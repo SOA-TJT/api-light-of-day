@@ -1,2 +1,5 @@
 queues:
-  - https://sqs.us-east-1.amazonaws.com/662471544988/lightofday-production
+queues:
+  - [https://sqs.us-east-1.amazonaws.com/662471544988/lightofday-production, 1]
+  - [https://sqs.us-east-1.amazonaws.com/662471544988/lightofday-subscribe-production, 1]
+
